@@ -40,7 +40,8 @@ public interface AssetAutoTaggerSystemConfiguration {
 	 */
 	@Meta.AD(
 		description = "maximum-number-of-tags-per-asset-description",
-		name = "maximum-number-of-tags-per-asset", required = false
+		max = "100", min = "0", name = "maximum-number-of-tags-per-asset",
+		required = false
 	)
 	public int maximumNumberOfTagsPerAsset();
 
