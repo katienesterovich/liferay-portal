@@ -17,9 +17,9 @@ package com.liferay.asset.auto.tagger.internal.configuration.persistence.listene
 import com.liferay.asset.auto.tagger.configuration.AssetAutoTaggerConfiguration;
 import com.liferay.asset.auto.tagger.configuration.AssetAutoTaggerConfigurationFactory;
 import com.liferay.asset.auto.tagger.internal.configuration.AssetAutoTaggerCompanyConfiguration;
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
@@ -47,8 +47,13 @@ public class AssetAutoTaggerCompanyConfigurationModelListener
 	public void onBeforeSave(String pid, Dictionary<String, Object> properties)
 		throws ConfigurationModelListenerException {
 
-		int maximumNumberOfTagsPerAsset = GetterUtil.getInteger(
-			properties.get("maximumNumberOfTagsPerAsset"));
+		AssetAutoTaggerCompanyConfiguration
+			assetAutoTaggerCompanyConfiguration =
+				ConfigurableUtil.createConfigurable(
+					AssetAutoTaggerCompanyConfiguration.class, properties);
+
+		String maximumNumberOfTagsPerAssetString =
+			assetAutoTaggerCompanyConfiguration.maximumNumberOfTagsPerAsset();
 
 		AssetAutoTaggerConfiguration systemAssetAutoTaggerConfiguration =
 			_assetAutoTaggerConfigurationFactory.
@@ -57,11 +62,26 @@ public class AssetAutoTaggerCompanyConfigurationModelListener
 		int systemMaximumNumberOfTagsPerAsset =
 			systemAssetAutoTaggerConfiguration.getMaximumNumberOfTagsPerAsset();
 
-		if (maximumNumberOfTagsPerAsset < 0) {
+		String regex = "[-0-9]+";
+		int maximumNumberOfTagsPerAsset;
+
+		if (!maximumNumberOfTagsPerAssetString.matches(regex)) {
+			throw new ConfigurationModelListenerException(
+				ResourceBundleUtil.getString(
+					_getResourceBundle(), "please-enter-only-digits"),
+				AssetAutoTaggerCompanyConfiguration.class, getClass(),
+				properties);
+		}
+
+		try {
+			maximumNumberOfTagsPerAsset = Integer.parseInt(
+				maximumNumberOfTagsPerAssetString);
+		}
+		catch (NumberFormatException nfe) {
 			throw new ConfigurationModelListenerException(
 				ResourceBundleUtil.getString(
 					_getResourceBundle(),
-					"maximum-number-of-tags-per-asset-cannot-be-negative"),
+					"maximum-number-of-tags-per-asset-is-too-high"),
 				AssetAutoTaggerCompanyConfiguration.class, getClass(),
 				properties);
 		}
@@ -75,6 +95,15 @@ public class AssetAutoTaggerCompanyConfigurationModelListener
 				ResourceBundleUtil.getString(
 					_getResourceBundle(),
 					"maximum-number-of-tags-per-asset-invalid"),
+				AssetAutoTaggerCompanyConfiguration.class, getClass(),
+				properties);
+		}
+
+		if (maximumNumberOfTagsPerAsset < 0) {
+			throw new ConfigurationModelListenerException(
+				ResourceBundleUtil.getString(
+					_getResourceBundle(),
+					"maximum-number-of-tags-per-asset-cannot-be-negative"),
 				AssetAutoTaggerCompanyConfiguration.class, getClass(),
 				properties);
 		}

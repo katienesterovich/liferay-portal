@@ -46,23 +46,38 @@ public class AssetAutoTaggerSystemConfigurationModelListener
 			ConfigurableUtil.createConfigurable(
 				AssetAutoTaggerSystemConfiguration.class, properties);
 
-		int maximumNumberOfTagsPerAsset =
+		String maximumNumberOfTagsPerAssetString =
 			assetAutoTaggerSystemConfiguration.maximumNumberOfTagsPerAsset();
+
+		String regex = "[-0-9]+";
+		int maximumNumberOfTagsPerAsset;
+
+		if (!maximumNumberOfTagsPerAssetString.matches(regex)) {
+			throw new ConfigurationModelListenerException(
+				ResourceBundleUtil.getString(
+					_getResourceBundle(), "please-enter-only-digits"),
+				AssetAutoTaggerSystemConfiguration.class, getClass(),
+				properties);
+		}
+
+		try {
+			maximumNumberOfTagsPerAsset = Integer.parseInt(
+				maximumNumberOfTagsPerAssetString);
+		}
+		catch (NumberFormatException nfe) {
+			throw new ConfigurationModelListenerException(
+				ResourceBundleUtil.getString(
+					_getResourceBundle(),
+					"maximum-number-of-tags-per-asset-is-too-high"),
+				AssetAutoTaggerSystemConfiguration.class, getClass(),
+				properties);
+		}
 
 		if (maximumNumberOfTagsPerAsset < 0) {
 			throw new ConfigurationModelListenerException(
 				ResourceBundleUtil.getString(
 					_getResourceBundle(),
 					"maximum-number-of-tags-per-asset-cannot-be-negative"),
-				AssetAutoTaggerSystemConfiguration.class, getClass(),
-				properties);
-		}
-
-		if (maximumNumberOfTagsPerAsset > 100) {
-			throw new ConfigurationModelListenerException(
-				ResourceBundleUtil.getString(
-					_getResourceBundle(),
-					"maximum-number-of-tags-per-asset-cannot-be-greater-than-100"),
 				AssetAutoTaggerSystemConfiguration.class, getClass(),
 				properties);
 		}

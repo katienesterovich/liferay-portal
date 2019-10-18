@@ -81,8 +81,9 @@ public class AssetAutoTaggerConfigurationFactoryImpl
 
 			@Override
 			public int getMaximumNumberOfTagsPerAsset() {
-				return _assetAutoTaggerSystemConfiguration.
-					maximumNumberOfTagsPerAsset();
+				return GetterUtil.getInteger(
+					_assetAutoTaggerSystemConfiguration.
+						maximumNumberOfTagsPerAsset());
 			}
 
 			@Override
@@ -132,13 +133,13 @@ public class AssetAutoTaggerConfigurationFactoryImpl
 
 		@Override
 		public int getMaximumNumberOfTagsPerAsset() {
-			int companyMaximumNumberOfTagsPerAsset =
+			int companyMaximumNumberOfTagsPerAsset = GetterUtil.getInteger(
 				_assetAutoTaggerCompanyConfiguration.
-					maximumNumberOfTagsPerAsset();
+					maximumNumberOfTagsPerAsset());
 
-			int systemMaximumNumberOfTagsPerAsset =
+			int systemMaximumNumberOfTagsPerAsset = GetterUtil.getInteger(
 				_assetAutoTaggerSystemConfiguration.
-					maximumNumberOfTagsPerAsset();
+					maximumNumberOfTagsPerAsset());
 
 			if ((systemMaximumNumberOfTagsPerAsset > 0) &&
 				((companyMaximumNumberOfTagsPerAsset == 0) ||

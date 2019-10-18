@@ -44,6 +44,6 @@ public interface AssetAutoTaggerCompanyConfiguration {
 		description = "maximum-number-of-tags-per-asset-description",
 		name = "maximum-number-of-tags-per-asset", required = false
 	)
-	public int maximumNumberOfTagsPerAsset();
+	public String maximumNumberOfTagsPerAsset();
 
 }
