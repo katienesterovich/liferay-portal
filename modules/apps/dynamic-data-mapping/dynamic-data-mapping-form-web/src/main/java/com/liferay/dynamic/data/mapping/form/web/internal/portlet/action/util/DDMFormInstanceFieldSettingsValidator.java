@@ -201,6 +201,10 @@ public class DDMFormInstanceFieldSettingsValidator {
 					DDMFormField field = ddmFormFieldsMap.get(
 						jsonObject.getString("fieldName"));
 
+					if (field == null) {
+						return;
+					}
+
 					DDMFormFieldType ddmFormFieldType =
 						_ddmFormFieldTypeServicesTracker.getDDMFormFieldType(
 							field.getType());
