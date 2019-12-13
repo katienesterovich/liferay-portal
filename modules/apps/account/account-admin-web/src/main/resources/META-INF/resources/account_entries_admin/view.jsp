@@ -24,6 +24,7 @@ ViewAccountEntriesManagementToolbarDisplayContext viewAccountEntriesManagementTo
 
 <clay:management-toolbar
 	displayContext="<%= viewAccountEntriesManagementToolbarDisplayContext %>"
+	supportsBulkActions="<%= true %>"
 />
 
 <div class="container-fluid container-fluid-max-xl">

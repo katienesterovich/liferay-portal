@@ -24,6 +24,7 @@ AccountUsersAdminManagementToolbarDisplayContext accountUsersAdminManagementTool
 
 <clay:management-toolbar
 	displayContext="<%= accountUsersAdminManagementToolbarDisplayContext %>"
+	supportsBulkActions="<%= true %>"
 />
 
 <aui:container cssClass="container-fluid container-fluid-max-xl">
