@@ -6286,7 +6286,7 @@ public class JournalArticleLocalServiceImpl
 			String[] assetTagNames, long[] assetLinkEntryIds, Double priority)
 		throws PortalException {
 
-		boolean visible = article.isApproved();
+		boolean visible = (article.isApproved() || article.isScheduled());
 
 		if (article.getClassNameId() !=
 				JournalArticleConstants.CLASSNAME_ID_DEFAULT) {
