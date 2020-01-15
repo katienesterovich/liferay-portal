@@ -196,15 +196,22 @@ public class AssetLinksTag extends IncludeTag {
 
 		List<Tuple> assetLinkEntries = new ArrayList<>();
 
-		List<AssetLink> assetLinks = new ArrayList<>();
+		//		List<AssetLink> assetLinks = new ArrayList<>();
+		//
+		//		if (portletRequest.getParameter(
+		//				"mvcPath").contains(
+		//					"/view_calendar_booking.jsp")) {
+		//
+		//			assetLinks = AssetLinkLocalServiceUtil.getDirectLinks(
+		//				_assetEntryId, false);
+		//		}
+		//		else {
+		//			assetLinks = AssetLinkLocalServiceUtil.getDirectLinks(
+		//				_assetEntryId);
+		//		};
 
-		if (portletRequest.getParameter("mvcPath").contains("/view_calendar_booking.jsp")) {
-			assetLinks = AssetLinkLocalServiceUtil.getDirectLinks(
-				_assetEntryId, false);
-		} else {
-			assetLinks = AssetLinkLocalServiceUtil.getDirectLinks(
-				_assetEntryId);
-		};
+		List<AssetLink> assetLinks = AssetLinkLocalServiceUtil.getDirectLinks(
+			_assetEntryId);
 
 		for (AssetLink assetLink : assetLinks) {
 			AssetEntry assetLinkEntry = null;

@@ -17,7 +17,9 @@
 <%@ include file="/asset_links/init.jsp" %>
 
 <%
+	System.out.println("In page.jsp, line 20");
 List<Tuple> assetLinkEntries = (List<Tuple>)request.getAttribute("liferay-asset:asset-links:assetLinkEntries");
+	System.out.println("In page.jsp, line 22");
 %>
 
 <h2 class="mb-3 sheet-tertiary-title">
@@ -31,6 +33,7 @@ List<Tuple> assetLinkEntries = (List<Tuple>)request.getAttribute("liferay-asset:
 		AssetEntry assetLinkEntry = (AssetEntry)tuple.getObject(0);
 
 		AssetRenderer assetRenderer = assetLinkEntry.getAssetRenderer();
+		System.out.println("In page.jsp, line 36");
 	%>
 
 		<li class="list-group-item list-group-item-flex">

@@ -19,6 +19,7 @@
 <liferay-util:dynamic-include key="com.liferay.calendar.web#/view_calendar_booking.jsp#pre" />
 
 <%
+	System.out.println("Line 21");
 String backURL = ParamUtil.getString(request, "backURL");
 
 int instanceIndex = BeanParamUtil.getInteger(calendarBooking, request, "instanceIndex");
@@ -36,6 +37,7 @@ long endTime = calendarBooking.getEndTime();
 java.util.Calendar endTimeJCalendar = JCalendarUtil.getJCalendar(endTime, userTimeZone);
 
 AssetEntry layoutAssetEntry = AssetEntryLocalServiceUtil.getEntry(CalendarBooking.class.getName(), calendarBooking.getCalendarBookingId());
+	System.out.println("Line 40");
 %>
 
 <div class="container-fluid-1280">
@@ -46,6 +48,8 @@ AssetEntry layoutAssetEntry = AssetEntryLocalServiceUtil.getEntry(CalendarBookin
 			localizeTitle="<%= false %>"
 			title="<%= calendarBooking.getTitle(locale) %>"
 		/>
+
+		<%System.out.println("Line 52");%>
 
 		<aui:fieldset markupView="lexicon">
 			<dl class="property-list">
@@ -70,6 +74,7 @@ AssetEntry layoutAssetEntry = AssetEntryLocalServiceUtil.getEntry(CalendarBookin
 
 				<%
 				List<CalendarBooking> childCalendarBookings = calendarDisplayContext.getChildCalendarBookings(calendarBooking);
+					System.out.println("Line 77");
 				%>
 
 				<c:if test="<%= !childCalendarBookings.isEmpty() %>">
@@ -86,6 +91,7 @@ AssetEntry layoutAssetEntry = AssetEntryLocalServiceUtil.getEntry(CalendarBookin
 
 							calendarResourcesNames.add(calendarResource.getName(locale));
 						}
+							System.out.println("Line 94");
 						%>
 
 						<%= HtmlUtil.escape(StringUtil.merge(calendarResourcesNames, ", ")) %>
@@ -126,6 +132,8 @@ AssetEntry layoutAssetEntry = AssetEntryLocalServiceUtil.getEntry(CalendarBookin
 				<%= calendarBooking.getDescription(locale) %>
 			</p>
 
+			<%System.out.println("Line 135");%>
+
 			<div class="entry-categories">
 				<liferay-asset:asset-categories-summary
 					className="<%= CalendarBooking.class.getName() %>"
@@ -141,11 +149,16 @@ AssetEntry layoutAssetEntry = AssetEntryLocalServiceUtil.getEntry(CalendarBookin
 				/>
 			</div>
 
+			<%System.out.println("Line 152");%>
+			<%System.out.println("layoutAssetEntry.getEntryId() = " + layoutAssetEntry.getEntryId());%>
+
 			<div class="entry-links">
 				<liferay-asset:asset-links
 					assetEntryId="<%= layoutAssetEntry.getEntryId() %>"
 				/>
 			</div>
+
+			<%System.out.println("Line 161");%>
 
 			<c:if test="<%= calendar.isEnableRatings() %>">
 				<div class="entry-ratings">
@@ -183,6 +196,7 @@ AssetEntry layoutAssetEntry = AssetEntryLocalServiceUtil.getEntry(CalendarBookin
 				<%
 				Recurrence recurrence = calendarBooking.getRecurrenceObj();
 
+					System.out.println("Line 196");
 				java.util.Calendar untilJCalendar = recurrence.getUntilJCalendar();
 				%>
 

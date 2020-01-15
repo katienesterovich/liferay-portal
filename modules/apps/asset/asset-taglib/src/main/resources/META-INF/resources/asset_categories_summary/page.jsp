@@ -17,22 +17,24 @@
 <%@ include file="/asset_categories_summary/init.jsp" %>
 
 <%
+	System.out.println("In asset_categories_summary --- line 20");
 String className = (String)request.getAttribute("liferay-asset:asset-categories-summary:className");
 long classPK = GetterUtil.getLong((String)request.getAttribute("liferay-asset:asset-categories-summary:classPK"));
 String displayStyle = GetterUtil.getString((String)request.getAttribute("liferay-asset:asset-categories-summary:displayStyle"), "default");
 String paramName = GetterUtil.getString((String)request.getAttribute("liferay-asset:asset-categories-summary:paramName"), "categoryId");
 PortletURL portletURL = (PortletURL)request.getAttribute("liferay-asset:asset-categories-summary:portletURL");
-
+	System.out.println("In asset_categories_summary --- line 26");
 List<AssetCategory> categories = (List<AssetCategory>)request.getAttribute("liferay-asset:asset-categories-summary:assetCategories");
 
 if (ListUtil.isEmpty(categories)) {
 	categories = AssetCategoryServiceUtil.getCategories(className, classPK);
+	System.out.println("In asset_categories_summary --- line 31");
 }
 
 AssetEntry assetEntry = AssetEntryLocalServiceUtil.fetchEntry(className, classPK);
 
 List<AssetVocabulary> vocabularies = AssetVocabularyServiceUtil.getGroupVocabularies(PortalUtil.getCurrentAndAncestorSiteGroupIds((assetEntry != null) ? assetEntry.getGroupId() : scopeGroupId));
-
+	System.out.println("In asset_categories_summary --- line 37");
 for (AssetVocabulary vocabulary : vocabularies) {
 	List<AssetCategory> curCategories = _filterCategories(categories, vocabulary);
 %>
@@ -60,6 +62,7 @@ for (AssetVocabulary vocabulary : vocabularies) {
 
 							<%
 							for (AssetCategory category : curCategories) {
+								System.out.println("In asset_categories_summary --- line 65");
 							%>
 
 								<span class="label label-dark label-lg text-uppercase">
@@ -82,6 +85,7 @@ for (AssetVocabulary vocabulary : vocabularies) {
 						<c:when test="<%= portletURL != null %>">
 
 							<%
+								System.out.println("In asset_categories_summary --- line 88");
 							for (AssetCategory category : curCategories) {
 								portletURL.setParameter(paramName, String.valueOf(category.getCategoryId()));
 							%>
@@ -96,6 +100,7 @@ for (AssetVocabulary vocabulary : vocabularies) {
 						<c:otherwise>
 
 							<%
+								System.out.println("In asset_categories_summary --- line 102");
 							for (AssetCategory category : curCategories) {
 							%>
 
