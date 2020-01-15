@@ -6632,6 +6632,11 @@ public class JournalArticleLocalServiceImpl
 				user.getUserId(), article, action, serviceContext);
 		}
 
+		updateAsset(userId, article, serviceContext.getAssetCategoryIds(),
+			serviceContext.getAssetTagNames(),
+			serviceContext.getAssetLinkEntryIds(),
+			serviceContext.getAssetPriority());
+
 		return article;
 	}
 
