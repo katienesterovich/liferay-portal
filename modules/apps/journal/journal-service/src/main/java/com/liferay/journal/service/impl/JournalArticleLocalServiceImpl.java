@@ -6632,6 +6632,11 @@ public class JournalArticleLocalServiceImpl
 				user.getUserId(), article, action, serviceContext);
 		}
 
+		updateAsset(userId, article, serviceContext.getAssetCategoryIds(),
+			serviceContext.getAssetTagNames(),
+			serviceContext.getAssetLinkEntryIds(),
+			serviceContext.getAssetPriority());
+
 		return article;
 	}
 
@@ -8351,6 +8356,13 @@ public class JournalArticleLocalServiceImpl
 			article.getCompanyId(), article.getGroupId(), userId,
 			JournalArticle.class.getName(), article.getId(), article,
 			serviceContext, workflowContext);
+
+		// Update asset to reflect any workflow changes
+
+		updateAsset(userId, article, serviceContext.getAssetCategoryIds(),
+			serviceContext.getAssetTagNames(),
+			serviceContext.getAssetLinkEntryIds(),
+			serviceContext.getAssetPriority());
 	}
 
 	protected void updateDDMFormFieldPredefinedValue(
