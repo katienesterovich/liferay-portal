@@ -6286,7 +6286,11 @@ public class JournalArticleLocalServiceImpl
 			String[] assetTagNames, long[] assetLinkEntryIds, Double priority)
 		throws PortalException {
 
-		boolean visible = (article.isApproved() || article.isScheduled());
+		boolean visible = false;
+
+		if (article.isApproved() || article.isScheduled()) {
+			visible = true;
+		}
 
 		if (article.getClassNameId() !=
 				JournalArticleConstants.CLASSNAME_ID_DEFAULT) {
@@ -6632,7 +6636,8 @@ public class JournalArticleLocalServiceImpl
 				user.getUserId(), article, action, serviceContext);
 		}
 
-		updateAsset(userId, article, serviceContext.getAssetCategoryIds(),
+		updateAsset(
+			userId, article, serviceContext.getAssetCategoryIds(),
 			serviceContext.getAssetTagNames(),
 			serviceContext.getAssetLinkEntryIds(),
 			serviceContext.getAssetPriority());
