@@ -1,0 +1,9 @@
+Bundle-Name: Liferay Dispatch Avalara Web
+Bundle-SymbolicName: com.liferay.dispatch.avalara.web
+Bundle-Version: 1.0.0
+Provide-Capability:\
+	liferay.resource.bundle;\
+		resource.bundle.aggregate:String="(bundle.symbolic.name=com.liferay.dispatch.avalara.web),(bundle.symbolic.name=com.liferay.dispatch.lang)";\
+		resource.bundle.base.name="content.Language";\
+		service.ranking=1
+Web-ContextPath: /dispatch-avalara-web
