@@ -15,24 +15,53 @@
 package com.liferay.commerce.avalara.connector.internal;
 
 import com.liferay.commerce.avalara.connector.CommerceAvalaraConnector;
+import com.liferay.commerce.avalara.connector.configuration.CommerceAvalaraConnectorConfiguration;
 import com.liferay.commerce.avalara.connector.constants.CommerceAvalaraConstants;
 import com.liferay.commerce.avalara.connector.exception.CommerceAvalaraConnectionException;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.util.Base64;
+
+import java.text.SimpleDateFormat;
+
+import java.util.Date;
 
 import net.avalara.avatax.rest.client.AvaTaxClient;
 import net.avalara.avatax.rest.client.models.PingResultModel;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Calvin Keum
+ * @author Riccardo Alberti
  */
 @Component(
 	enabled = false, immediate = true, service = CommerceAvalaraConnector.class
 )
 public class CommerceAvalaraConnectorImpl implements CommerceAvalaraConnector {
+
+	@Override
+	public String getTaxRateByZipCode(long groupId) throws Exception {
+		AvaTaxClient avaTaxClient = _getAvaTaxClient(groupId);
+
+		Date date = new Date() {
+
+			@Override
+			public String toString() {
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+					"yyyy-MM-dd");
+
+				return simpleDateFormat.format(this);
+			}
+
+		};
+
+		return avaTaxClient.downloadTaxRatesByZipCode(date, null);
+	}
 
 	@Override
 	public void verifyConnection(
@@ -52,6 +81,16 @@ public class CommerceAvalaraConnectorImpl implements CommerceAvalaraConnector {
 		catch (Exception exception) {
 			throw new CommerceAvalaraConnectionException(exception.getCause());
 		}
+	}
+
+	private AvaTaxClient _getAvaTaxClient(long groupId) throws PortalException {
+		_commerceAvalaraConnectorConfiguration =
+			_getCommerceTaxTypeAvalaraConfiguration(groupId);
+
+		return _getAvaTaxClient(
+			_commerceAvalaraConnectorConfiguration.accountNumber(),
+			_commerceAvalaraConnectorConfiguration.licenseKey(),
+			_commerceAvalaraConnectorConfiguration.serviceURL());
 	}
 
 	private AvaTaxClient _getAvaTaxClient(
@@ -76,5 +115,22 @@ public class CommerceAvalaraConnectorImpl implements CommerceAvalaraConnector {
 
 		return avaTaxClient.withSecurity(encodedSecurityHeader);
 	}
+
+	private CommerceAvalaraConnectorConfiguration
+			_getCommerceTaxTypeAvalaraConfiguration(long groupId)
+		throws PortalException {
+
+		return _configurationProvider.getConfiguration(
+			CommerceAvalaraConnectorConfiguration.class,
+			new GroupServiceSettingsLocator(
+				groupId,
+				CommerceAvalaraConnectorConfiguration.class.getName()));
+	}
+
+	private CommerceAvalaraConnectorConfiguration
+		_commerceAvalaraConnectorConfiguration;
+
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 }

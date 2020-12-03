@@ -12,17 +12,13 @@
  *
  */
 
-package com.liferay.commerce.avalara.connector;
+package com.liferay.commerce.avalara.connector.helper;
 
 /**
  * @author Riccardo Alberti
  */
-public interface CommerceAvalaraConnector {
+public interface CommerceAvalaraConnectorHelper {
 
-	public String getTaxRateByZipCode(long groupId) throws Exception;
-
-	public void verifyConnection(
-			String accountNumber, String licenseKey, String serviceURL)
-		throws Exception;
+	public void updateByAddressEntries(long groupId) throws Exception;
 
 }
