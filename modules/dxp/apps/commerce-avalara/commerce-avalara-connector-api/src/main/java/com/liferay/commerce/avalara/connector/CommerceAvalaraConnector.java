@@ -19,6 +19,8 @@ package com.liferay.commerce.avalara.connector;
  */
 public interface CommerceAvalaraConnector {
 
+	public String getTaxRateByZipCode(long groupId) throws Exception;
+
 	public void verifyConnection(
 			String accountNumber, String licenseKey, String serviceUrl)
 		throws Exception;
