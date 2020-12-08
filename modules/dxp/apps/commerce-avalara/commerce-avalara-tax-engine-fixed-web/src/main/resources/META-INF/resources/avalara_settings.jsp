@@ -24,29 +24,15 @@ CommerceAvalaraConnectorConfiguration commerceAvalaraConnectorConfiguration = (C
 
 <aui:form action="<%= editCommerceAvalaraConnectorActionURL %>" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
+	<aui:input name="commerceTaxMethodId" type="hidden" value='<%= ParamUtil.getLong(request, "commerceTaxMethodId") %>' />
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 
 	<liferay-ui:error exception="<%= CommerceAvalaraConnectionException.class %>" message="could-not-verify-the-connection-the-provided-credentials-are-not-correct" />
 
-	<commerce-ui:panel>
-		<%@ include file="/edit_avalara_settings.jspf" %>
-
-		<aui:button cssClass="btn-lg btn-secondary" onClick='<%= liferayPortletResponse.getNamespace() + "verifyConnection();" %>' type="submit" value="verify-connection" />
-	</commerce-ui:panel>
+	<%@ include file="fields/credentials.jspf" %>
+	<%@ include file="fields/additional_settings.jspf" %>
 
 	<aui:button-row>
 		<aui:button cssClass="btn-lg" type="submit" />
 	</aui:button-row>
 </aui:form>
-
-<aui:script>
-	Liferay.provide(window, '<portlet:namespace />verifyConnection', function (
-		evt
-	) {
-		const inputCmd = document.querySelector(
-			'#<portlet:namespace /><%= Constants.CMD %>'
-		);
-
-		inputCmd.value = 'verifyConnection';
-	});
-</aui:script>
