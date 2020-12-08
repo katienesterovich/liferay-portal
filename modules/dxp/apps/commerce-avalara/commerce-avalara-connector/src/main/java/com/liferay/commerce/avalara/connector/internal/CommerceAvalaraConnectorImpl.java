@@ -28,8 +28,12 @@ import com.liferay.portal.kernel.util.Base64;
 import java.text.SimpleDateFormat;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.avalara.avatax.rest.client.AvaTaxClient;
+import net.avalara.avatax.rest.client.FetchResult;
+import net.avalara.avatax.rest.client.models.CompanyModel;
 import net.avalara.avatax.rest.client.models.PingResultModel;
 
 import org.osgi.service.component.annotations.Component;
@@ -61,6 +65,22 @@ public class CommerceAvalaraConnectorImpl implements CommerceAvalaraConnector {
 		};
 
 		return avaTaxClient.downloadTaxRatesByZipCode(date, null);
+	}
+
+	public Map<String, String> queryCompanies(long groupId) throws Exception {
+		AvaTaxClient avaTaxClient = _getAvaTaxClient(groupId);
+
+		FetchResult<CompanyModel> companyModelFetchResult =
+			avaTaxClient.queryCompanies(null, null, 0, 0, null);
+
+		Map<String, String> companyNamesWithCodes = new HashMap<>();
+
+		for (CompanyModel company : companyModelFetchResult.getValue()) {
+			companyNamesWithCodes.put(
+				company.getName(), company.getCompanyCode());
+		}
+
+		return companyNamesWithCodes;
 	}
 
 	@Override

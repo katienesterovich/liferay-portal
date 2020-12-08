@@ -27,10 +27,10 @@ CommerceAvalaraConnectorConfiguration commerceAvalaraConnectorConfiguration = (C
 	<aui:input name="commerceTaxMethodId" type="hidden" value='<%= ParamUtil.getLong(request, "commerceTaxMethodId") %>' />
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 
-	<liferay-ui:error exception="<%= CommerceAvalaraConnectionException.class %>" message="could-not-verify-the-connection-the-provided-credentials-are-not-correct" />
+	<liferay-ui:error exception="<%= CommerceAvalaraConnectionException.class %>" message="could-not-verify-the-connection-the-provided-credentials-are-incorrect" />
 
-	<%@ include file="fields/credentials.jspf" %>
-	<%@ include file="fields/additional_settings.jspf" %>
+	<%@ include file="/fields/credentials.jspf" %>
+	<%@ include file="/fields/additional_settings.jspf" %>
 
 	<aui:button-row>
 		<aui:button cssClass="btn-lg" type="submit" />

@@ -14,6 +14,7 @@
 
 package com.liferay.commerce.avalara.tax.engine.fixed.web.internal.servlet.taglib.ui;
 
+import com.liferay.commerce.avalara.connector.CommerceAvalaraConnector;
 import com.liferay.commerce.avalara.connector.configuration.CommerceAvalaraConnectorConfiguration;
 import com.liferay.commerce.constants.CommerceTaxScreenNavigationConstants;
 import com.liferay.commerce.tax.model.CommerceTaxMethod;
@@ -31,7 +32,9 @@ import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.io.IOException;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.servlet.ServletContext;
@@ -127,6 +130,9 @@ public class CommerceTaxMethodAvalaraScreenNavigationCategory
 			httpServletRequest.setAttribute(
 				CommerceAvalaraConnectorConfiguration.class.getName(),
 				commerceAvalaraConnectorConfiguration);
+
+			_setConnectorAttribute(
+				httpServletRequest, commerceTaxMethod.getGroupId());
 		}
 		catch (Exception exception) {
 			throw new IOException(exception);
@@ -136,6 +142,26 @@ public class CommerceTaxMethodAvalaraScreenNavigationCategory
 			_servletContext, httpServletRequest, httpServletResponse,
 			"/avalara_settings.jsp");
 	}
+
+	private void _setConnectorAttribute(
+		HttpServletRequest httpServletRequest, long groupId) {
+
+		Map<String, String> companies = new HashMap<>();
+
+		try {
+			companies = _commerceAvalaraConnector.queryCompanies(groupId);
+		}
+		catch (Exception exception) {
+
+			// Means invalid credentials or not yet set
+
+		}
+
+		httpServletRequest.setAttribute("avalaraCompanies", companies);
+	}
+
+	@Reference
+	private CommerceAvalaraConnector _commerceAvalaraConnector;
 
 	@Reference
 	private CommerceTaxMethodService _commerceTaxMethodService;

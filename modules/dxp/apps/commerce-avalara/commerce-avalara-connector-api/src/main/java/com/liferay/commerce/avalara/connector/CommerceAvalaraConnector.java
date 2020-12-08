@@ -14,12 +14,16 @@
 
 package com.liferay.commerce.avalara.connector;
 
+import java.util.Map;
+
 /**
  * @author Riccardo Alberti
  */
 public interface CommerceAvalaraConnector {
 
 	public String getTaxRateByZipCode(long groupId) throws Exception;
+
+	public Map<String, String> queryCompanies(long groupId) throws Exception;
 
 	public void verifyConnection(
 			String accountNumber, String licenseKey, String serviceUrl)
