@@ -29,6 +29,8 @@ public class CommerceAvalaraConstants {
 
 	public static final int CSV_ZIP_CODE_POSITION = 0;
 
+	public static final String DEFAULT = "default";
+
 	public static final String KEY = "avalara";
 
 	public static final String MACHINE_NAME = "Liferay";

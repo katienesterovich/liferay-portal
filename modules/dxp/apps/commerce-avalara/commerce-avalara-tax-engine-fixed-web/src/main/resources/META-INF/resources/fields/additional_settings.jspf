@@ -19,7 +19,32 @@
 	collapsible="<%= true %>"
 	label="settings"
 >
-	<aui:input id="avalara-company-code" ignoreRequestValue="<%= true %>" label="company-code" name="companyCode" value="<%= commerceAvalaraConnectorConfiguration.companyCode() %>" />
+	<aui:select id="avalara-company-code" ignoreRequestValue="<%= true %>" label="company-code" name="companyCode" value="<%= commerceAvalaraConnectorConfiguration.companyCode() %>">
+
+		<%
+		Map<String, String> avalaraCompanies = (Map<String, String>)request.getAttribute("avalaraCompanies");
+		String companyCode = commerceAvalaraConnectorConfiguration.companyCode();
+		%>
+
+		<c:choose>
+			<c:when test="<%= avalaraCompanies.isEmpty() %>">
+				<aui:option label="<%= CommerceAvalaraConstants.DEFAULT %>" selected="<%= true %>" value="<%= CommerceAvalaraConstants.DEFAULT %>" />
+			</c:when>
+			<c:otherwise>
+
+				<%
+				for (Map.Entry<String, String> companyModel : avalaraCompanies.entrySet()) {
+				%>
+
+					<aui:option label="<%= companyModel.getKey() %>" selected="<%= companyCode.isEmpty() ? companyModel.getValue().equals(CommerceAvalaraConstants.DEFAULT) : companyModel.getValue().equals(companyCode) %>" value="<%= companyModel.getValue() %>" />
+
+				<%
+				}
+				%>
+
+			</c:otherwise>
+		</c:choose>
+	</aui:select>
 
 	<aui:input id="avalara-disabled-document-recording" label="disable-document-recording" name="disabledDocumentRecording" type="toggle-switch" value="<%= commerceAvalaraConnectorConfiguration.disabledDocumentRecording() %>" />
 </liferay-frontend:fieldset>
