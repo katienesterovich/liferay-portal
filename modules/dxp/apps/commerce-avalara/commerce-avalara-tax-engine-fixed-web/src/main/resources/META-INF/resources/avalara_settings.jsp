@@ -31,6 +31,7 @@ CommerceAvalaraConnectorConfiguration commerceAvalaraConnectorConfiguration = (C
 
 	<%@ include file="/fields/credentials.jspf" %>
 	<%@ include file="/fields/additional_settings.jspf" %>
+	<%@ include file="/fields/run_scheduled_job.jspf" %>
 
 	<aui:button-row>
 		<aui:button cssClass="btn-lg" type="submit" />

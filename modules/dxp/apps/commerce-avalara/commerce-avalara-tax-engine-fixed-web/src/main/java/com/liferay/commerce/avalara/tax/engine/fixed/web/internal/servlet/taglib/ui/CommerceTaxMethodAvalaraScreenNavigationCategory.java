@@ -16,6 +16,7 @@ package com.liferay.commerce.avalara.tax.engine.fixed.web.internal.servlet.tagli
 
 import com.liferay.commerce.avalara.connector.CommerceAvalaraConnector;
 import com.liferay.commerce.avalara.connector.configuration.CommerceAvalaraConnectorConfiguration;
+import com.liferay.commerce.avalara.connector.helper.CommerceAvalaraDispatchTriggerHelper;
 import com.liferay.commerce.constants.CommerceTaxScreenNavigationConstants;
 import com.liferay.commerce.tax.model.CommerceTaxMethod;
 import com.liferay.commerce.tax.service.CommerceTaxMethodService;
@@ -133,6 +134,8 @@ public class CommerceTaxMethodAvalaraScreenNavigationCategory
 
 			_setConnectorAttribute(
 				httpServletRequest, commerceTaxMethod.getGroupId());
+
+			_setJobHasBeenRun(httpServletRequest, commerceTaxMethod);
 		}
 		catch (Exception exception) {
 			throw new IOException(exception);
@@ -160,8 +163,23 @@ public class CommerceTaxMethodAvalaraScreenNavigationCategory
 		httpServletRequest.setAttribute("avalaraCompanies", companies);
 	}
 
+	private void _setJobHasBeenRun(
+		HttpServletRequest httpServletRequest,
+		CommerceTaxMethod commerceTaxMethod) {
+
+		boolean previouslyRun =
+			_commerceAvalaraDispatchTriggerHelper.jobPreviouslyRunSuccessfully(
+				commerceTaxMethod);
+
+		httpServletRequest.setAttribute("previouslyRun", previouslyRun);
+	}
+
 	@Reference
 	private CommerceAvalaraConnector _commerceAvalaraConnector;
+
+	@Reference
+	private CommerceAvalaraDispatchTriggerHelper
+		_commerceAvalaraDispatchTriggerHelper;
 
 	@Reference
 	private CommerceTaxMethodService _commerceTaxMethodService;

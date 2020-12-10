@@ -19,9 +19,14 @@ import com.liferay.commerce.avalara.connector.helper.CommerceAvalaraDispatchTrig
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.tax.model.CommerceTaxMethod;
+import com.liferay.dispatch.executor.DispatchTaskStatus;
 import com.liferay.dispatch.model.DispatchTrigger;
+import com.liferay.dispatch.service.DispatchLogLocalService;
 import com.liferay.dispatch.service.DispatchTriggerLocalService;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.Property;
+import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -98,6 +103,61 @@ public class CommerceAvalaraDispatchTriggerHelperImpl
 	}
 
 	@Override
+	public boolean jobPreviouslyRunSuccessfully(
+		CommerceTaxMethod commerceTaxMethod) {
+
+		CommerceChannel commerceChannel = _getAssociatedCommerceChannel(
+			commerceTaxMethod);
+
+		String triggerName = _getAvalaraTriggerName(commerceChannel);
+
+		DispatchTrigger dispatchTrigger =
+			_dispatchTriggerLocalService.fetchDispatchTrigger(
+				commerceChannel.getCompanyId(), triggerName);
+
+		if (dispatchTrigger == null) {
+			return false;
+		}
+
+		ActionableDynamicQuery actionableDynamicQuery =
+			_dispatchLogLocalService.getActionableDynamicQuery();
+
+		actionableDynamicQuery.setAddCriteriaMethod(
+			dynamicQuery -> {
+				Property dispatchTriggerId = PropertyFactoryUtil.forName(
+					"dispatchTriggerId");
+
+				dynamicQuery.add(
+					dispatchTriggerId.eq(
+						dispatchTrigger.getDispatchTriggerId()));
+
+				Property status = PropertyFactoryUtil.forName("status");
+
+				dynamicQuery.add(
+					status.eq(DispatchTaskStatus.SUCCESSFUL.getStatus()));
+			});
+
+		long successfulJobsCount = 0;
+
+		try {
+			successfulJobsCount = actionableDynamicQuery.performCount();
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					"Could not execute performCount on ActionableDynamicQuery",
+					portalException);
+			}
+		}
+
+		if (successfulJobsCount > 0) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
 	public void updateDispatchTrigger(CommerceTaxMethod commerceTaxMethod) {
 		CommerceChannel commerceChannel = _getAssociatedCommerceChannel(
 			commerceTaxMethod);
@@ -155,6 +215,9 @@ public class CommerceAvalaraDispatchTriggerHelperImpl
 
 	@Reference
 	private CommerceChannelLocalService _commerceChannelLocalService;
+
+	@Reference
+	private DispatchLogLocalService _dispatchLogLocalService;
 
 	@Reference
 	private DispatchTriggerLocalService _dispatchTriggerLocalService;

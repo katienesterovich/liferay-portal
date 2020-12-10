@@ -15,7 +15,7 @@
 --%>
 
 <aui:fieldset-group markupView="lexicon">
-	<aui:fieldset collapsed="<%= true %>" collapsible="<%= true %>" helpMessage="avalara-settings-help-text" label="settings">
+	<aui:fieldset collapsed="<%= true %>" collapsible="<%= true %>" helpMessage="you-must-configure-credentials-prior-to-proceeding" label="settings">
 		<aui:select id="avalara-company-code" ignoreRequestValue="<%= true %>" label="company-code" name="companyCode" value="<%= commerceAvalaraConnectorConfiguration.companyCode() %>">
 
 			<%

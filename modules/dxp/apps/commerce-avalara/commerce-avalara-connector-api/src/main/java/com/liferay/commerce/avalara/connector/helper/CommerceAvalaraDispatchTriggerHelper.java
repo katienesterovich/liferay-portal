@@ -25,6 +25,9 @@ public interface CommerceAvalaraDispatchTriggerHelper {
 
 	public void deleteDispatchTrigger(CommerceTaxMethod commerceTaxMethod);
 
+	public boolean jobPreviouslyRunSuccessfully(
+		CommerceTaxMethod commerceTaxMethod);
+
 	public void updateDispatchTrigger(CommerceTaxMethod commerceTaxMethod);
 
 }
