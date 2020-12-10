@@ -27,7 +27,12 @@ import com.liferay.commerce.tax.engine.fixed.service.CommerceTaxFixedRateAddress
 import com.liferay.commerce.tax.model.CommerceTaxMethod;
 import com.liferay.commerce.tax.service.CommerceTaxMethodLocalService;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -64,13 +69,21 @@ public class CommerceAvalaraConnectorHelperImpl
 		String[] taxRatesByZipCodeLines = StringUtil.splitLines(
 			taxRateByZipCode);
 
+		CommerceCountry commerceCountryUS =
+			_commerceCountryLocalService.fetchCommerceCountry(
+				commerceTaxMethod.getCompanyId(), "US");
+
+		if (commerceCountryUS == null) {
+			commerceCountryUS = _addUnitedStates(commerceTaxMethod);
+		}
+
 		for (int i = 1; i < taxRatesByZipCodeLines.length; i++) {
 			String[] taxRatesByZipCodeLine = StringUtil.split(
 				taxRatesByZipCodeLines[i], StringPool.COMMA);
 
 			_upsertByAddressEntry(
-				commerceTaxMethod.getCompanyId(), commerceTaxMethod.getUserId(),
-				groupId, commerceTaxMethod.getCommerceTaxMethodId(), "US",
+				commerceTaxMethod.getUserId(), groupId,
+				commerceTaxMethod.getCommerceTaxMethodId(), commerceCountryUS,
 				taxRatesByZipCodeLine
 					[CommerceAvalaraConstants.CSV_REGION_POSITION],
 				taxRatesByZipCodeLine
@@ -82,18 +95,42 @@ public class CommerceAvalaraConnectorHelperImpl
 		}
 	}
 
-	private void _upsertByAddressEntry(
-			long companyId, long userId, long groupId, long commerceTaxMethodId,
-			String countryCode, String regionCode, String zip, double rate)
-		throws Exception {
+	private CommerceCountry _addUnitedStates(
+		CommerceTaxMethod commerceTaxMethod) {
 
-		CommerceCountry commerceCountry =
-			_commerceCountryLocalService.fetchCommerceCountry(
-				companyId, countryCode);
+		ServiceContext serviceContext = new ServiceContext();
 
-		if (commerceCountry == null) {
-			return;
+		serviceContext.setUserId(commerceTaxMethod.getUserId());
+		serviceContext.setCompanyId(commerceTaxMethod.getCompanyId());
+		serviceContext.setLanguageId(commerceTaxMethod.getDefaultLanguageId());
+
+		CommerceCountry commerceCountry = null;
+
+		try {
+			commerceCountry = _commerceCountryLocalService.addCommerceCountry(
+				HashMapBuilder.put(
+					serviceContext.getLocale(),
+					LanguageUtil.get(
+						serviceContext.getLocale(), "country." + _NAME_US)
+				).build(),
+				true, true, _TWO_LETTERS_ISO_CODE_US,
+				_THREE_LETTERS_ISO_CODE_US, _NUMERIC_ISO_CODE_US, false,
+				_PRIORITY_US, true, serviceContext);
 		}
+		catch (PortalException portalException) {
+			_log.error(
+				"Could not add United States as a commerce country",
+				portalException);
+		}
+
+		return commerceCountry;
+	}
+
+	private void _upsertByAddressEntry(
+			long userId, long groupId, long commerceTaxMethodId,
+			CommerceCountry commerceCountry, String regionCode, String zip,
+			double rate)
+		throws Exception {
 
 		CommerceRegion commerceRegion;
 
@@ -138,6 +175,19 @@ public class CommerceAvalaraConnectorHelperImpl
 					commerceRegion.getCommerceRegionId(), zip, rate);
 		}
 	}
+
+	private static final String _NAME_US = "united-states";
+
+	private static final int _NUMERIC_ISO_CODE_US = 840;
+
+	private static final int _PRIORITY_US = 19;
+
+	private static final String _THREE_LETTERS_ISO_CODE_US = "USA";
+
+	private static final String _TWO_LETTERS_ISO_CODE_US = "US";
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		CommerceAvalaraConnectorHelperImpl.class);
 
 	@Reference
 	private CommerceAvalaraConnector _commerceAvalaraConnector;
