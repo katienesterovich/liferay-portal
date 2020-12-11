@@ -16,9 +16,11 @@ package com.liferay.commerce.avalara.tax.engine.fixed.web.internal.servlet.tagli
 
 import com.liferay.commerce.avalara.connector.CommerceAvalaraConnector;
 import com.liferay.commerce.avalara.connector.configuration.CommerceAvalaraConnectorConfiguration;
+import com.liferay.commerce.avalara.connector.helper.CommerceAvalaraDispatchTriggerHelper;
 import com.liferay.commerce.constants.CommerceTaxScreenNavigationConstants;
 import com.liferay.commerce.tax.model.CommerceTaxMethod;
 import com.liferay.commerce.tax.service.CommerceTaxMethodService;
+import com.liferay.dispatch.model.DispatchLog;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationCategory;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
@@ -131,8 +133,19 @@ public class CommerceTaxMethodAvalaraScreenNavigationCategory
 				CommerceAvalaraConnectorConfiguration.class.getName(),
 				commerceAvalaraConnectorConfiguration);
 
-			_setConnectorAttribute(
-				httpServletRequest, commerceTaxMethod.getGroupId());
+			if (_verifyConnection(commerceAvalaraConnectorConfiguration)) {
+				httpServletRequest.setAttribute(
+					"connectionEstablished", Boolean.TRUE);
+
+				_setCompanies(
+					httpServletRequest, commerceTaxMethod.getGroupId());
+				_setJobPreviouslyRun(httpServletRequest, commerceTaxMethod);
+				_setLatestJob(httpServletRequest, commerceTaxMethod);
+			}
+			else {
+				httpServletRequest.setAttribute(
+					"connectionEstablished", Boolean.FALSE);
+			}
 		}
 		catch (Exception exception) {
 			throw new IOException(exception);
@@ -143,7 +156,7 @@ public class CommerceTaxMethodAvalaraScreenNavigationCategory
 			"/avalara_settings.jsp");
 	}
 
-	private void _setConnectorAttribute(
+	private void _setCompanies(
 		HttpServletRequest httpServletRequest, long groupId) {
 
 		Map<String, String> companies = new HashMap<>();
@@ -152,16 +165,56 @@ public class CommerceTaxMethodAvalaraScreenNavigationCategory
 			companies = _commerceAvalaraConnector.queryCompanies(groupId);
 		}
 		catch (Exception exception) {
-
-			// Missing or invalid credentials
-
 		}
 
 		httpServletRequest.setAttribute("avalaraCompanies", companies);
 	}
 
+	private void _setJobPreviouslyRun(
+		HttpServletRequest httpServletRequest,
+		CommerceTaxMethod commerceTaxMethod) {
+
+		boolean jobPreviouslyRun =
+			_commerceAvalaraDispatchTriggerHelper.jobPreviouslyRun(
+				commerceTaxMethod);
+
+		httpServletRequest.setAttribute("jobPreviouslyRun", jobPreviouslyRun);
+	}
+
+	private void _setLatestJob(
+		HttpServletRequest httpServletRequest,
+		CommerceTaxMethod commerceTaxMethod) {
+
+		DispatchLog latestDispatchLog =
+			_commerceAvalaraDispatchTriggerHelper.getLatestDispatchLog(
+				commerceTaxMethod);
+
+		httpServletRequest.setAttribute("latestDispatchLog", latestDispatchLog);
+	}
+
+	private boolean _verifyConnection(
+		CommerceAvalaraConnectorConfiguration
+			commerceAvalaraConnectorConfiguration) {
+
+		try {
+			_commerceAvalaraConnector.verifyConnection(
+				commerceAvalaraConnectorConfiguration.accountNumber(),
+				commerceAvalaraConnectorConfiguration.licenseKey(),
+				commerceAvalaraConnectorConfiguration.serviceURL());
+
+			return true;
+		}
+		catch (Exception exception) {
+			return false;
+		}
+	}
+
 	@Reference
 	private CommerceAvalaraConnector _commerceAvalaraConnector;
+
+	@Reference
+	private CommerceAvalaraDispatchTriggerHelper
+		_commerceAvalaraDispatchTriggerHelper;
 
 	@Reference
 	private CommerceTaxMethodService _commerceTaxMethodService;

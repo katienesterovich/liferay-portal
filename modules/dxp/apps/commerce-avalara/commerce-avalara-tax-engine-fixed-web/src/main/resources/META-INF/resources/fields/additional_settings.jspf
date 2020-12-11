@@ -15,7 +15,6 @@
 --%>
 
 <liferay-frontend:fieldset
-	collapsed="<%= true %>"
 	collapsible="<%= true %>"
 	label="settings"
 >

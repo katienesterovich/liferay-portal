@@ -18,6 +18,7 @@
 
 <%
 CommerceAvalaraConnectorConfiguration commerceAvalaraConnectorConfiguration = (CommerceAvalaraConnectorConfiguration)request.getAttribute(CommerceAvalaraConnectorConfiguration.class.getName());
+boolean connectionEstablished = GetterUtil.getBoolean(request.getAttribute("connectionEstablished"));
 %>
 
 <portlet:actionURL name="/commerce_tax_methods/edit_commerce_tax_avalara" var="editCommerceAvalaraConnectorActionURL" />
@@ -30,8 +31,24 @@ CommerceAvalaraConnectorConfiguration commerceAvalaraConnectorConfiguration = (C
 	<liferay-ui:error exception="<%= CommerceAvalaraConnectionException.class %>" message="the-connection-could-not-be-verified-because-the-provided-credentials-are-incorrect" />
 
 	<commerce-ui:panel>
-		<%@ include file="/fields/credentials.jspf" %>
-		<%@ include file="/fields/additional_settings.jspf" %>
+		<c:choose>
+			<c:when test="<%= connectionEstablished %>">
+				<clay:alert
+					displayType="success"
+					message="connection-established"
+				/>
+				<%@ include file="/fields/credentials.jspf" %>
+				<%@ include file="/fields/additional_settings.jspf" %>
+				<%@ include file="/fields/dispatch_trigger_setup.jspf" %>
+			</c:when>
+			<c:otherwise>
+				<clay:alert
+					displayType="warning"
+					message="configure-credentials-before-continuing"
+				/>
+				<%@ include file="/fields/credentials.jspf" %>
+			</c:otherwise>
+		</c:choose>
 	</commerce-ui:panel>
 
 	<aui:button-row>

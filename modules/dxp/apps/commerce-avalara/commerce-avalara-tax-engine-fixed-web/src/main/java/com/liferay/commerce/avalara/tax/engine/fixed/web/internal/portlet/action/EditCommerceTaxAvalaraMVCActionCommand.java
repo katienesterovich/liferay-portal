@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.ModifiableSettings;
 import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.settings.SettingsFactory;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 
 import javax.portlet.ActionRequest;
@@ -54,11 +55,19 @@ public class EditCommerceTaxAvalaraMVCActionCommand
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
+		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
+
 		try {
-			_updateCommerceTaxAvalara(actionRequest);
-			_verifyConnection(actionRequest);
-			_commerceAvalaraDispatchTriggerHelper.updateDispatchTrigger(
-				_getCommerceTaxMethod(actionRequest), Boolean.TRUE);
+			if (cmd.equals("runNow")) {
+				_commerceAvalaraDispatchTriggerHelper.runJob(
+					_getCommerceTaxMethod(actionRequest));
+			}
+			else {
+				_updateCommerceTaxAvalara(actionRequest);
+				_verifyConnection(actionRequest);
+				_commerceAvalaraDispatchTriggerHelper.updateDispatchTrigger(
+					_getCommerceTaxMethod(actionRequest), Boolean.TRUE);
+			}
 		}
 		catch (Throwable throwable) {
 			_commerceAvalaraDispatchTriggerHelper.updateDispatchTrigger(
