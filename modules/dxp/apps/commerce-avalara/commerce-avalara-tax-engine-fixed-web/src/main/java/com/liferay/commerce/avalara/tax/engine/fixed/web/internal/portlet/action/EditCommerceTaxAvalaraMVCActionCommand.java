@@ -16,6 +16,7 @@ package com.liferay.commerce.avalara.tax.engine.fixed.web.internal.portlet.actio
 
 import com.liferay.commerce.avalara.connector.CommerceAvalaraConnector;
 import com.liferay.commerce.avalara.connector.configuration.CommerceAvalaraConnectorConfiguration;
+import com.liferay.commerce.avalara.connector.helper.CommerceAvalaraDispatchTriggerHelper;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.tax.model.CommerceTaxMethod;
 import com.liferay.commerce.tax.service.CommerceTaxMethodService;
@@ -26,7 +27,6 @@ import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.ModifiableSettings;
 import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.settings.SettingsFactory;
-import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 
 import javax.portlet.ActionRequest;
@@ -54,18 +54,16 @@ public class EditCommerceTaxAvalaraMVCActionCommand
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
-
 		try {
-			if (cmd.equals(Constants.UPDATE)) {
-				_updateCommerceTaxAvalara(actionRequest);
-			}
-			else if (cmd.equals("verifyConnection")) {
-				_updateCommerceTaxAvalara(actionRequest);
-				_verifyConnection(actionRequest);
-			}
+			_updateCommerceTaxAvalara(actionRequest);
+			_verifyConnection(actionRequest);
+			_commerceAvalaraDispatchTriggerHelper.updateDispatchTrigger(
+				_getCommerceTaxMethod(actionRequest), Boolean.TRUE);
 		}
 		catch (Throwable throwable) {
+			_commerceAvalaraDispatchTriggerHelper.updateDispatchTrigger(
+				_getCommerceTaxMethod(actionRequest), Boolean.FALSE);
+
 			SessionErrors.add(actionRequest, throwable.getClass(), throwable);
 
 			String redirect = ParamUtil.getString(actionRequest, "redirect");
@@ -74,14 +72,21 @@ public class EditCommerceTaxAvalaraMVCActionCommand
 		}
 	}
 
-	private void _updateCommerceTaxAvalara(ActionRequest actionRequest)
+	private CommerceTaxMethod _getCommerceTaxMethod(ActionRequest actionRequest)
 		throws Exception {
 
 		long commerceTaxMethodId = ParamUtil.getLong(
 			actionRequest, "commerceTaxMethodId");
 
-		CommerceTaxMethod commerceTaxMethod =
-			_commerceTaxMethodService.getCommerceTaxMethod(commerceTaxMethodId);
+		return _commerceTaxMethodService.getCommerceTaxMethod(
+			commerceTaxMethodId);
+	}
+
+	private void _updateCommerceTaxAvalara(ActionRequest actionRequest)
+		throws Exception {
+
+		CommerceTaxMethod commerceTaxMethod = _getCommerceTaxMethod(
+			actionRequest);
 
 		Settings settings = _settingsFactory.getSettings(
 			new GroupServiceSettingsLocator(
@@ -132,6 +137,10 @@ public class EditCommerceTaxAvalaraMVCActionCommand
 
 	@Reference
 	private CommerceAvalaraConnector _commerceAvalaraConnector;
+
+	@Reference
+	private CommerceAvalaraDispatchTriggerHelper
+		_commerceAvalaraDispatchTriggerHelper;
 
 	@Reference
 	private CommerceTaxMethodService _commerceTaxMethodService;

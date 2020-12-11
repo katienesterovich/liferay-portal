@@ -12,6 +12,8 @@ dependencies {
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:commerce:commerce-account-api")
 	compileOnly project(":apps:commerce:commerce-api")
+	compileOnly project(":apps:commerce:commerce-tax-api")
 	compileOnly project(":apps:commerce:commerce-tax-engine-fixed-api")
+	compileOnly project(":apps:dispatch:dispatch-api")
 	compileOnly project(":core:petra:petra-string")
 }
