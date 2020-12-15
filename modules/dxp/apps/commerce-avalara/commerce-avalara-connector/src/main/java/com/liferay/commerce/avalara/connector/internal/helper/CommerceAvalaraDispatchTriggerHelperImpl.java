@@ -14,6 +14,8 @@
 
 package com.liferay.commerce.avalara.connector.internal.helper;
 
+import com.liferay.commerce.avalara.connector.CommerceAvalaraConnector;
+import com.liferay.commerce.avalara.connector.configuration.CommerceAvalaraConnectorConfiguration;
 import com.liferay.commerce.avalara.connector.constants.CommerceAvalaraConstants;
 import com.liferay.commerce.avalara.connector.helper.CommerceAvalaraDispatchTriggerHelper;
 import com.liferay.commerce.product.model.CommerceChannel;
@@ -34,6 +36,8 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Destination;
 import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 
@@ -64,7 +68,8 @@ public class CommerceAvalaraDispatchTriggerHelperImpl
 
 			String triggerName = _getAvalaraTriggerName(commerceChannel);
 
-			UnicodeProperties unicodeProperties = new UnicodeProperties(true);
+			UnicodeProperties unicodeProperties = new UnicodeProperties(
+				Boolean.TRUE);
 
 			unicodeProperties.setProperty(
 				CommerceAvalaraConstants.GROUP_ID,
@@ -172,8 +177,33 @@ public class CommerceAvalaraDispatchTriggerHelperImpl
 	public DispatchTrigger updateDispatchTrigger(
 		CommerceTaxMethod commerceTaxMethod) {
 
-		return updateDispatchTrigger(
-			commerceTaxMethod, commerceTaxMethod.isActive());
+		if (!commerceTaxMethod.isActive()) {
+			return updateDispatchTrigger(commerceTaxMethod, Boolean.FALSE);
+		}
+
+		CommerceChannel commerceChannel = _getAssociatedCommerceChannel(
+			commerceTaxMethod);
+
+		try {
+			CommerceAvalaraConnectorConfiguration
+				commerceAvalaraConnectorConfiguration =
+					_configurationProvider.getConfiguration(
+						CommerceAvalaraConnectorConfiguration.class,
+						new GroupServiceSettingsLocator(
+							commerceChannel.getGroupId(),
+							CommerceAvalaraConnectorConfiguration.class.
+								getName()));
+
+			_commerceAvalaraConnector.verifyConnection(
+				commerceAvalaraConnectorConfiguration.accountNumber(),
+				commerceAvalaraConnectorConfiguration.licenseKey(),
+				commerceAvalaraConnectorConfiguration.serviceURL());
+
+			return updateDispatchTrigger(commerceTaxMethod, Boolean.TRUE);
+		}
+		catch (Exception exception) {
+			return updateDispatchTrigger(commerceTaxMethod, Boolean.FALSE);
+		}
 	}
 
 	@Override
@@ -261,7 +291,13 @@ public class CommerceAvalaraDispatchTriggerHelperImpl
 		CommerceAvalaraDispatchTriggerHelperImpl.class);
 
 	@Reference
+	private CommerceAvalaraConnector _commerceAvalaraConnector;
+
+	@Reference
 	private CommerceChannelLocalService _commerceChannelLocalService;
+
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference(
 		target = "(destination.name=" + DispatchConstants.EXECUTOR_DESTINATION_NAME + ")"
