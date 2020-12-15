@@ -80,7 +80,7 @@ public class CommerceAvalaraDispatchTriggerHelperImpl
 				commerceTaxMethod.getEngineKey(), unicodeProperties);
 
 			dispatchTrigger.setCronExpression(
-				_EVERY_MONTH_ON_THE_SECOND_CRON_EXPRESSION);
+				_EVERY_MONTH_ON_THE_FIRST_CRON_EXPRESSION);
 
 			_dispatchTriggerLocalService.updateDispatchTrigger(dispatchTrigger);
 		}
@@ -284,8 +284,8 @@ public class CommerceAvalaraDispatchTriggerHelperImpl
 		_destination.send(message);
 	}
 
-	private static final String _EVERY_MONTH_ON_THE_SECOND_CRON_EXPRESSION =
-		"0 0 1 2 * ?";
+	private static final String _EVERY_MONTH_ON_THE_FIRST_CRON_EXPRESSION =
+		"0 0 0 1 * ?";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CommerceAvalaraDispatchTriggerHelperImpl.class);
