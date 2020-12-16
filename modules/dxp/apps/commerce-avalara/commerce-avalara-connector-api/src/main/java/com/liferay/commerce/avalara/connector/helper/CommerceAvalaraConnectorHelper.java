@@ -15,6 +15,7 @@
 package com.liferay.commerce.avalara.connector.helper;
 
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.commerce.tax.model.CommerceTaxMethod;
 
 /**
  * @author Riccardo Alberti
@@ -23,6 +24,8 @@ public interface CommerceAvalaraConnectorHelper {
 
 	public void createTaxCategories(ServiceContext serviceContext)
 		throws Exception;
+
+	public void removeByAddressEntries(CommerceTaxMethod commerceTaxMethod);
 
 	public void updateByAddressEntries(long groupId) throws Exception;
 
