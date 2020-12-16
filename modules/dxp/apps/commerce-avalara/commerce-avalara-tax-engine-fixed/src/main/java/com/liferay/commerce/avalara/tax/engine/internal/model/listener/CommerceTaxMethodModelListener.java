@@ -15,6 +15,7 @@
 package com.liferay.commerce.avalara.tax.engine.internal.model.listener;
 
 import com.liferay.commerce.avalara.connector.constants.CommerceAvalaraConstants;
+import com.liferay.commerce.avalara.connector.helper.CommerceAvalaraConnectorHelper;
 import com.liferay.commerce.avalara.connector.helper.CommerceAvalaraDispatchTriggerHelper;
 import com.liferay.commerce.tax.model.CommerceTaxMethod;
 import com.liferay.portal.kernel.model.BaseModelListener;
@@ -57,8 +58,14 @@ public class CommerceTaxMethodModelListener
 		if (engineKey.equals(CommerceAvalaraConstants.KEY)) {
 			_commerceAvalaraDispatchTriggerHelper.deleteDispatchTrigger(
 				commerceTaxMethod);
+
+			_commerceAvalaraConnectorHelper.removeByAddressEntries(
+				commerceTaxMethod);
 		}
 	}
+
+	@Reference
+	private CommerceAvalaraConnectorHelper _commerceAvalaraConnectorHelper;
 
 	@Reference
 	private CommerceAvalaraDispatchTriggerHelper
