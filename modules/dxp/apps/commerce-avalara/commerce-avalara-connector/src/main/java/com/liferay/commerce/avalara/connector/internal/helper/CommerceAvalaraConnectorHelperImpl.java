@@ -50,6 +50,13 @@ public class CommerceAvalaraConnectorHelperImpl
 	implements CommerceAvalaraConnectorHelper {
 
 	@Override
+	public void removeByAddressEntries(CommerceTaxMethod commerceTaxMethod) {
+		_commerceTaxFixedRateAddressRelLocalService.
+			deleteCommerceTaxFixedRateAddressRelsByCommerceTaxMethodId(
+				commerceTaxMethod.getCommerceTaxMethodId());
+	}
+
+	@Override
 	public void updateByAddressEntries(long groupId) throws Exception {
 		String taxRateByZipCode = _commerceAvalaraConnector.getTaxRateByZipCode(
 			groupId);
