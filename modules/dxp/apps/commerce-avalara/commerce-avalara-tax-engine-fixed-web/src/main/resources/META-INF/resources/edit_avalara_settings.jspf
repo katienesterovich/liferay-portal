@@ -21,7 +21,3 @@
 <aui:input id="avalara-license-key" ignoreRequestValue="<%= true %>" label="license-key" name="licenseKey" value="<%= commerceAvalaraConnectorConfiguration.licenseKey() %>" />
 
 <aui:input id="avalara-service-url" ignoreRequestValue="<%= true %>" label="service-url" name="serviceURL" value="<%= commerceAvalaraConnectorConfiguration.serviceURL() %>" />
-
-<aui:input id="avalara-company-code" ignoreRequestValue="<%= true %>" label="company-code" name="companyCode" value="<%= commerceAvalaraConnectorConfiguration.companyCode() %>" />
-
-<aui:input id="avalara-disabled-document-recording" inlineLabel="right" label="disable-document-recording" labelCssClass="simple-toggle-switch" name="disabledDocumentRecording" type="toggle-switch" value="<%= commerceAvalaraConnectorConfiguration.disabledDocumentRecording() %>" />
