@@ -14,15 +14,19 @@
  */
 --%>
 
+<%
+CommerceAvalaraConnectorChannelConfiguration commerceAvalaraConnectorChannelConfiguration = (CommerceAvalaraConnectorChannelConfiguration)GetterUtil.getObject(request.getAttribute(CommerceAvalaraConnectorChannelConfiguration.class.getName()));
+%>
+
 <liferay-frontend:fieldset
 	collapsible="<%= true %>"
 	label="settings"
 >
-	<aui:select id="avalara-company-code" ignoreRequestValue="<%= true %>" label="company-code" name="companyCode" value="<%= commerceAvalaraConnectorConfiguration.companyCode() %>">
+	<aui:select id="avalara-company-code" ignoreRequestValue="<%= true %>" label="company-code" name="companyCode" value="<%= commerceAvalaraConnectorChannelConfiguration.companyCode() %>">
 
 		<%
 		Map<String, String> avalaraCompanies = (Map<String, String>)request.getAttribute("avalaraCompanies");
-		String companyCode = commerceAvalaraConnectorConfiguration.companyCode();
+		String companyCode = commerceAvalaraConnectorChannelConfiguration.companyCode();
 		%>
 
 		<c:choose>
@@ -45,5 +49,5 @@
 		</c:choose>
 	</aui:select>
 
-	<aui:input id="avalara-disabled-document-recording" label="disable-document-recording" name="disabledDocumentRecording" type="toggle-switch" value="<%= commerceAvalaraConnectorConfiguration.disabledDocumentRecording() %>" />
+	<aui:input id="avalara-disabled-document-recording" label="disable-document-recording" name="disabledDocumentRecording" type="toggle-switch" value="<%= commerceAvalaraConnectorChannelConfiguration.disabledDocumentRecording() %>" />
 </liferay-frontend:fieldset>

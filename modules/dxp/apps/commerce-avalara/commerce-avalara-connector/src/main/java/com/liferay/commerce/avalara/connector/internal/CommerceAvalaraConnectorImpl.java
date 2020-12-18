@@ -105,7 +105,7 @@ public class CommerceAvalaraConnectorImpl implements CommerceAvalaraConnector {
 
 	private AvaTaxClient _getAvaTaxClient(long groupId) throws PortalException {
 		_commerceAvalaraConnectorConfiguration =
-			_getCommerceTaxTypeAvalaraConfiguration(groupId);
+			_getCommerceAvalaraConnectorConfiguration(groupId);
 
 		return _getAvaTaxClient(
 			_commerceAvalaraConnectorConfiguration.accountNumber(),
@@ -137,7 +137,7 @@ public class CommerceAvalaraConnectorImpl implements CommerceAvalaraConnector {
 	}
 
 	private CommerceAvalaraConnectorConfiguration
-			_getCommerceTaxTypeAvalaraConfiguration(long groupId)
+			_getCommerceAvalaraConnectorConfiguration(long groupId)
 		throws PortalException {
 
 		return _configurationProvider.getConfiguration(

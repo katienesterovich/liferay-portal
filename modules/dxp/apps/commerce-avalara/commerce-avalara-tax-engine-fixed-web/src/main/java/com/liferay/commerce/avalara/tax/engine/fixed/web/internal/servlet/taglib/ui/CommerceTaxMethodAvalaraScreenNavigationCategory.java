@@ -15,6 +15,7 @@
 package com.liferay.commerce.avalara.tax.engine.fixed.web.internal.servlet.taglib.ui;
 
 import com.liferay.commerce.avalara.connector.CommerceAvalaraConnector;
+import com.liferay.commerce.avalara.connector.configuration.CommerceAvalaraConnectorChannelConfiguration;
 import com.liferay.commerce.avalara.connector.configuration.CommerceAvalaraConnectorConfiguration;
 import com.liferay.commerce.avalara.connector.helper.CommerceAvalaraDispatchTriggerHelper;
 import com.liferay.commerce.constants.CommerceTaxScreenNavigationConstants;
@@ -27,6 +28,7 @@ import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.ParameterMapSettingsLocator;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -124,14 +126,25 @@ public class CommerceTaxMethodAvalaraScreenNavigationCategory
 						CommerceAvalaraConnectorConfiguration.class,
 						new ParameterMapSettingsLocator(
 							httpServletRequest.getParameterMap(),
-							new GroupServiceSettingsLocator(
-								commerceTaxMethod.getGroupId(),
+							new CompanyServiceSettingsLocator(
+								commerceTaxMethod.getCompanyId(),
 								CommerceAvalaraConnectorConfiguration.class.
 									getName())));
 
+			CommerceAvalaraConnectorChannelConfiguration
+				commerceAvalaraConnectorChannelConfiguration =
+					_configurationProvider.getConfiguration(
+						CommerceAvalaraConnectorChannelConfiguration.class,
+						new ParameterMapSettingsLocator(
+							httpServletRequest.getParameterMap(),
+							new GroupServiceSettingsLocator(
+								commerceTaxMethod.getGroupId(),
+								CommerceAvalaraConnectorChannelConfiguration.
+									class.getName())));
+
 			httpServletRequest.setAttribute(
-				CommerceAvalaraConnectorConfiguration.class.getName(),
-				commerceAvalaraConnectorConfiguration);
+				CommerceAvalaraConnectorChannelConfiguration.class.getName(),
+				commerceAvalaraConnectorChannelConfiguration);
 
 			if (_verifyConnection(commerceAvalaraConnectorConfiguration)) {
 				httpServletRequest.setAttribute(

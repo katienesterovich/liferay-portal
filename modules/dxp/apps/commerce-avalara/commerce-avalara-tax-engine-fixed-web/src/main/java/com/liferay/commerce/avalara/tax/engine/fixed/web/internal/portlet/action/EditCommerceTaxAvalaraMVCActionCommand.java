@@ -14,15 +14,13 @@
 
 package com.liferay.commerce.avalara.tax.engine.fixed.web.internal.portlet.action;
 
-import com.liferay.commerce.avalara.connector.CommerceAvalaraConnector;
-import com.liferay.commerce.avalara.connector.configuration.CommerceAvalaraConnectorConfiguration;
+import com.liferay.commerce.avalara.connector.configuration.CommerceAvalaraConnectorChannelConfiguration;
 import com.liferay.commerce.avalara.connector.helper.CommerceAvalaraDispatchTriggerHelper;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.tax.model.CommerceTaxMethod;
 import com.liferay.commerce.tax.service.CommerceTaxMethodService;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
-import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.ModifiableSettings;
 import com.liferay.portal.kernel.settings.Settings;
@@ -57,27 +55,14 @@ public class EditCommerceTaxAvalaraMVCActionCommand
 
 		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
 
-		try {
-			if (cmd.equals("runNow")) {
-				_commerceAvalaraDispatchTriggerHelper.runJob(
-					_getCommerceTaxMethod(actionRequest));
-			}
-			else {
-				_updateCommerceTaxAvalara(actionRequest);
-				_verifyConnection(actionRequest);
-				_commerceAvalaraDispatchTriggerHelper.updateDispatchTrigger(
-					_getCommerceTaxMethod(actionRequest), Boolean.TRUE);
-			}
+		if (cmd.equals("runNow")) {
+			_commerceAvalaraDispatchTriggerHelper.runJob(
+				_getCommerceTaxMethod(actionRequest));
 		}
-		catch (Throwable throwable) {
+		else {
+			_updateCommerceTaxAvalara(actionRequest);
 			_commerceAvalaraDispatchTriggerHelper.updateDispatchTrigger(
-				_getCommerceTaxMethod(actionRequest), Boolean.FALSE);
-
-			SessionErrors.add(actionRequest, throwable.getClass(), throwable);
-
-			String redirect = ParamUtil.getString(actionRequest, "redirect");
-
-			sendRedirect(actionRequest, actionResponse, redirect);
+				_getCommerceTaxMethod(actionRequest), Boolean.TRUE);
 		}
 	}
 
@@ -100,15 +85,10 @@ public class EditCommerceTaxAvalaraMVCActionCommand
 		Settings settings = _settingsFactory.getSettings(
 			new GroupServiceSettingsLocator(
 				commerceTaxMethod.getGroupId(),
-				CommerceAvalaraConnectorConfiguration.class.getName()));
+				CommerceAvalaraConnectorChannelConfiguration.class.getName()));
 
 		ModifiableSettings modifiableSettings =
 			settings.getModifiableSettings();
-
-		String accountNumber = ParamUtil.getString(
-			actionRequest, "accountNumber");
-
-		modifiableSettings.setValue("accountNumber", accountNumber);
 
 		String companyCode = ParamUtil.getString(actionRequest, "companyCode");
 
@@ -121,31 +101,8 @@ public class EditCommerceTaxAvalaraMVCActionCommand
 			"disabledDocumentRecording",
 			String.valueOf(disabledDocumentRecording));
 
-		String licenseKey = ParamUtil.getString(actionRequest, "licenseKey");
-
-		modifiableSettings.setValue("licenseKey", licenseKey);
-
-		String serviceURL = ParamUtil.getString(actionRequest, "serviceURL");
-
-		modifiableSettings.setValue("serviceURL", serviceURL);
-
 		modifiableSettings.store();
 	}
-
-	private void _verifyConnection(ActionRequest actionRequest)
-		throws Exception {
-
-		String accountNumber = ParamUtil.getString(
-			actionRequest, "accountNumber");
-		String licenseKey = ParamUtil.getString(actionRequest, "licenseKey");
-		String serviceURL = ParamUtil.getString(actionRequest, "serviceURL");
-
-		_commerceAvalaraConnector.verifyConnection(
-			accountNumber, licenseKey, serviceURL);
-	}
-
-	@Reference
-	private CommerceAvalaraConnector _commerceAvalaraConnector;
 
 	@Reference
 	private CommerceAvalaraDispatchTriggerHelper

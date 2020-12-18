@@ -16,11 +16,6 @@
 
 <%@ include file="/init.jsp" %>
 
-<%
-CommerceAvalaraConnectorConfiguration commerceAvalaraConnectorConfiguration = (CommerceAvalaraConnectorConfiguration)request.getAttribute(CommerceAvalaraConnectorConfiguration.class.getName());
-boolean connectionEstablished = GetterUtil.getBoolean(request.getAttribute("connectionEstablished"));
-%>
-
 <portlet:actionURL name="/commerce_tax_methods/edit_commerce_tax_avalara" var="editCommerceAvalaraConnectorActionURL" />
 
 <aui:form action="<%= editCommerceAvalaraConnectorActionURL %>" method="post" name="fm">
@@ -32,12 +27,7 @@ boolean connectionEstablished = GetterUtil.getBoolean(request.getAttribute("conn
 
 	<commerce-ui:panel>
 		<c:choose>
-			<c:when test="<%= connectionEstablished %>">
-				<clay:alert
-					displayType="success"
-					message="connection-established"
-				/>
-				<%@ include file="/fields/credentials.jspf" %>
+			<c:when test='<%= GetterUtil.getBoolean(request.getAttribute("connectionEstablished")) %>'>
 				<%@ include file="/fields/additional_settings.jspf" %>
 				<%@ include file="/fields/dispatch_trigger_setup.jspf" %>
 			</c:when>
@@ -46,7 +36,6 @@ boolean connectionEstablished = GetterUtil.getBoolean(request.getAttribute("conn
 					displayType="warning"
 					message="configure-credentials-before-continuing"
 				/>
-				<%@ include file="/fields/credentials.jspf" %>
 			</c:otherwise>
 		</c:choose>
 	</commerce-ui:panel>
