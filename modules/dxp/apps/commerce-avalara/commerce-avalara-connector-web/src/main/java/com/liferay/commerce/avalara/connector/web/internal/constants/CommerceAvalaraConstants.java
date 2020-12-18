@@ -19,6 +19,13 @@ package com.liferay.commerce.avalara.connector.web.internal.constants;
  */
 public class CommerceAvalaraConstants {
 
+	public static final String
+		AVALARA_TAX_CODES_COMMERCE_HEALTH_STATUS_DESCRIPTION =
+			"avalara.tax.codes.commerce.health.status.description";
+
+	public static final String AVALARA_TAX_CODES_COMMERCE_HEALTH_STATUS_KEY =
+		"avalara.tax.codes.commerce.health.status.key";
+
 	public static final int TYPE_CREDENTIALS = 0;
 
 }
