@@ -58,11 +58,11 @@ public class EditCommerceTaxAvalaraMVCActionCommand
 		if (cmd.equals("runNow")) {
 			_commerceAvalaraDispatchTriggerHelper.runJob(
 				_getCommerceTaxMethod(actionRequest));
+			_commerceAvalaraDispatchTriggerHelper.updateDispatchTrigger(
+				_getCommerceTaxMethod(actionRequest), Boolean.TRUE);
 		}
 		else {
 			_updateCommerceTaxAvalara(actionRequest);
-			_commerceAvalaraDispatchTriggerHelper.updateDispatchTrigger(
-				_getCommerceTaxMethod(actionRequest), Boolean.TRUE);
 		}
 	}
 
