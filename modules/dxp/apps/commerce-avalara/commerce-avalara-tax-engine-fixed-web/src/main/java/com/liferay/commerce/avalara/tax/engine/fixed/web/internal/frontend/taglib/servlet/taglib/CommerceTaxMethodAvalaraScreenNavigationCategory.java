@@ -160,7 +160,7 @@ public class CommerceTaxMethodAvalaraScreenNavigationCategory
 		Map<String, String> companies = new HashMap<>();
 
 		try {
-			companies = new HashMap<>();
+			companies = _commerceAvalaraConnector.queryCompanies();
 		}
 		catch (Exception exception) {
 		}
