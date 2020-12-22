@@ -27,12 +27,14 @@ import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.util.Base64;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.avalara.avatax.rest.client.AvaTaxClient;
 import net.avalara.avatax.rest.client.FetchResult;
 import net.avalara.avatax.rest.client.models.CompanyModel;
 import net.avalara.avatax.rest.client.models.PingResultModel;
+import net.avalara.avatax.rest.client.models.TaxCodeModel;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -46,6 +48,19 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true, service = CommerceAvalaraConnector.class
 )
 public class CommerceAvalaraConnectorImpl implements CommerceAvalaraConnector {
+
+	@Override
+	public List<TaxCodeModel> listTaxCodes() throws Exception {
+		AvaTaxClient avaTaxClient = _getAvaTaxClient();
+
+		String expiredTaxCodeFilter =
+			"description NE 'Expired Tax Code - Do Not Use'";
+
+		FetchResult<TaxCodeModel> taxCodeModelFetchResult =
+			avaTaxClient.listTaxCodes(expiredTaxCodeFilter, 0, 0, null);
+
+		return taxCodeModelFetchResult.getValue();
+	}
 
 	@Override
 	public Map<String, String> queryCompanies() throws Exception {
