@@ -14,19 +14,31 @@
 
 package com.liferay.commerce.avalara.connector.web.internal.util;
 
+import com.liferay.commerce.avalara.connector.helper.CommerceAvalaraConnectorHelper;
 import com.liferay.commerce.avalara.connector.web.internal.constants.CommerceAvalaraConstants;
 import com.liferay.commerce.constants.CommerceHealthStatusConstants;
 import com.liferay.commerce.health.status.CommerceHealthHttpStatus;
+import com.liferay.commerce.product.model.CPTaxCategory;
+import com.liferay.commerce.product.service.CPTaxCategoryLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextFactory;
+import com.liferay.portal.kernel.transaction.Propagation;
+import com.liferay.portal.kernel.transaction.TransactionConfig;
+import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.concurrent.Callable;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Katie Nesterovich
@@ -45,7 +57,20 @@ public class AvalaraTaxCodesCommerceHealthHttpStatus
 	@Override
 	public void fixIssue(HttpServletRequest httpServletRequest)
 		throws PortalException {
-		//		TODO: Grab Entity Use Codes from Avalara and import to our database
+
+		try {
+			ServiceContext serviceContext = ServiceContextFactory.getInstance(
+				httpServletRequest);
+
+			Callable<Object> avalaraCallable =
+				new AvalaraTaxCodesCommerceHealthHttpStatus.
+					AvalaraTaxCodesCallable(serviceContext);
+
+			TransactionInvokerUtil.invoke(_transactionConfig, avalaraCallable);
+		}
+		catch (Throwable throwable) {
+			_log.error(throwable, throwable);
+		}
 	}
 
 	@Override
@@ -86,9 +111,53 @@ public class AvalaraTaxCodesCommerceHealthHttpStatus
 	public boolean isFixed(long companyId, long commerceChannelId)
 		throws PortalException {
 
-		//		TODO: Check if an arbitrary tax code from Avalara exists as a Tax Category
+		CPTaxCategory cpTaxCategory =
+			_cpTaxCategoryLocalService.fetchCPTaxCategoryByReferenceCode(
+				companyId, _TANGIBLE_PERSONAL_PROPERTY);
 
-		return false;
+		if (cpTaxCategory == null) {
+			return false;
+		}
+
+		return true;
+	}
+
+	private static final String _TANGIBLE_PERSONAL_PROPERTY = "P0000000";
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AvalaraTaxCodesCommerceHealthHttpStatus.class);
+
+	private static final TransactionConfig _transactionConfig =
+		TransactionConfig.Factory.create(
+			Propagation.REQUIRED, new Class<?>[] {Exception.class});
+
+	@Reference
+	private CommerceAvalaraConnectorHelper _commerceAvalaraConnectorHelper;
+
+	@Reference
+	private CPTaxCategoryLocalService _cpTaxCategoryLocalService;
+
+	private class AvalaraTaxCodesCallable implements Callable<Object> {
+
+		@Override
+		public Object call() throws Exception {
+			try {
+				_commerceAvalaraConnectorHelper.createTaxCategories(
+					_serviceContext.getUserId());
+			}
+			catch (Exception exception) {
+				_log.error(exception, exception);
+			}
+
+			return null;
+		}
+
+		private AvalaraTaxCodesCallable(ServiceContext serviceContext) {
+			_serviceContext = serviceContext;
+		}
+
+		private final ServiceContext _serviceContext;
+
 	}
 
 }

@@ -12,24 +12,13 @@
  *
  */
 
-package com.liferay.commerce.avalara.connector;
-
-import java.util.List;
-import java.util.Map;
-
-import net.avalara.avatax.rest.client.models.TaxCodeModel;
+package com.liferay.commerce.avalara.connector.helper;
 
 /**
  * @author Riccardo Alberti
  */
-public interface CommerceAvalaraConnector {
+public interface CommerceAvalaraConnectorHelper {
 
-	public List<TaxCodeModel> listTaxCodes() throws Exception;
-
-	public Map<String, String> queryCompanies() throws Exception;
-
-	public void verifyConnection(
-			String accountNumber, String licenseKey, String serviceURL)
-		throws Exception;
+	public void createTaxCategories(long userId) throws Exception;
 
 }
