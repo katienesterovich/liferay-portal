@@ -23,7 +23,7 @@ public class CommerceAvalaraConstants {
 
 	public static final String APP_VERSION = "1.0";
 
-	public static final String DEFAULT = "default";
+	public static final String DEFAULT = "DEFAULT";
 
 	public static final String KEY = "avalara";
 

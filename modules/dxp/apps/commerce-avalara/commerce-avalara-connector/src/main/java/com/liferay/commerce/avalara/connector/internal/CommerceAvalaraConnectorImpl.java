@@ -53,8 +53,6 @@ public class CommerceAvalaraConnectorImpl implements CommerceAvalaraConnector {
 	public List<TaxCodeModel> listTaxCodes() throws Exception {
 		AvaTaxClient avaTaxClient = _getAvaTaxClient();
 
-		// Check if need to paginate, docs say 1000 results max per call
-
 		FetchResult<TaxCodeModel> taxCodeModelFetchResult =
 			avaTaxClient.listTaxCodes(null, 0, 0, null);
 

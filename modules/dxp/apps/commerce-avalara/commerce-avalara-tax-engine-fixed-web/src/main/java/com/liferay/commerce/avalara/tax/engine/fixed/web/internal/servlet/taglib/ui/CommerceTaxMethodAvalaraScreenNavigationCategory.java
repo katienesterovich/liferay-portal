@@ -119,17 +119,6 @@ public class CommerceTaxMethodAvalaraScreenNavigationCategory
 				_commerceTaxMethodService.getCommerceTaxMethod(
 					commerceTaxMethodId);
 
-			CommerceAvalaraConnectorConfiguration
-				commerceAvalaraConnectorConfiguration =
-					_configurationProvider.getConfiguration(
-						CommerceAvalaraConnectorConfiguration.class,
-						new ParameterMapSettingsLocator(
-							httpServletRequest.getParameterMap(),
-							new CompanyServiceSettingsLocator(
-								commerceTaxMethod.getCompanyId(),
-								CommerceAvalaraConnectorConfiguration.class.
-									getName())));
-
 			CommerceAvalaraConnectorChannelConfiguration
 				commerceAvalaraConnectorChannelConfiguration =
 					_configurationProvider.getConfiguration(
@@ -145,7 +134,9 @@ public class CommerceTaxMethodAvalaraScreenNavigationCategory
 				CommerceAvalaraConnectorChannelConfiguration.class.getName(),
 				commerceAvalaraConnectorChannelConfiguration);
 
-			if (_verifyConnection(commerceAvalaraConnectorConfiguration)) {
+			if (_verifyConnection(
+					httpServletRequest, commerceTaxMethod.getCompanyId())) {
+
 				httpServletRequest.setAttribute(
 					"connectionEstablished", Boolean.TRUE);
 
@@ -178,10 +169,20 @@ public class CommerceTaxMethodAvalaraScreenNavigationCategory
 	}
 
 	private boolean _verifyConnection(
-		CommerceAvalaraConnectorConfiguration
-			commerceAvalaraConnectorConfiguration) {
+		HttpServletRequest httpServletRequest, long companyId) {
 
 		try {
+			CommerceAvalaraConnectorConfiguration
+				commerceAvalaraConnectorConfiguration =
+					_configurationProvider.getConfiguration(
+						CommerceAvalaraConnectorConfiguration.class,
+						new ParameterMapSettingsLocator(
+							httpServletRequest.getParameterMap(),
+							new CompanyServiceSettingsLocator(
+								companyId,
+								CommerceAvalaraConnectorConfiguration.class.
+									getName())));
+
 			_commerceAvalaraConnector.verifyConnection(
 				commerceAvalaraConnectorConfiguration.accountNumber(),
 				commerceAvalaraConnectorConfiguration.licenseKey(),
