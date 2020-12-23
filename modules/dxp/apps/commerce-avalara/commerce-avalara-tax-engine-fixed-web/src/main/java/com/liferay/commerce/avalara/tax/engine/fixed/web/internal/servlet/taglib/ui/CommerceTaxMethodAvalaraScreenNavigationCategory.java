@@ -14,7 +14,10 @@
 
 package com.liferay.commerce.avalara.tax.engine.fixed.web.internal.servlet.taglib.ui;
 
+import com.liferay.commerce.avalara.connector.CommerceAvalaraConnector;
+import com.liferay.commerce.avalara.connector.configuration.CommerceAvalaraConnectorChannelConfiguration;
 import com.liferay.commerce.avalara.connector.configuration.CommerceAvalaraConnectorConfiguration;
+import com.liferay.commerce.avalara.connector.constants.CommerceAvalaraConstants;
 import com.liferay.commerce.constants.CommerceTaxScreenNavigationConstants;
 import com.liferay.commerce.tax.model.CommerceTaxMethod;
 import com.liferay.commerce.tax.service.CommerceTaxMethodService;
@@ -24,6 +27,7 @@ import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.ParameterMapSettingsLocator;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -31,7 +35,9 @@ import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.io.IOException;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.servlet.ServletContext;
@@ -92,7 +98,7 @@ public class CommerceTaxMethodAvalaraScreenNavigationCategory
 
 		String engineKey = commerceTaxMethod.getEngineKey();
 
-		if (engineKey.equals("avalara")) {
+		if (engineKey.equals(CommerceAvalaraConstants.KEY)) {
 			return true;
 		}
 
@@ -119,14 +125,36 @@ public class CommerceTaxMethodAvalaraScreenNavigationCategory
 						CommerceAvalaraConnectorConfiguration.class,
 						new ParameterMapSettingsLocator(
 							httpServletRequest.getParameterMap(),
-							new GroupServiceSettingsLocator(
-								commerceTaxMethod.getGroupId(),
+							new CompanyServiceSettingsLocator(
+								commerceTaxMethod.getCompanyId(),
 								CommerceAvalaraConnectorConfiguration.class.
 									getName())));
 
+			CommerceAvalaraConnectorChannelConfiguration
+				commerceAvalaraConnectorChannelConfiguration =
+					_configurationProvider.getConfiguration(
+						CommerceAvalaraConnectorChannelConfiguration.class,
+						new ParameterMapSettingsLocator(
+							httpServletRequest.getParameterMap(),
+							new GroupServiceSettingsLocator(
+								commerceTaxMethod.getGroupId(),
+								CommerceAvalaraConnectorChannelConfiguration.
+									class.getName())));
+
 			httpServletRequest.setAttribute(
-				CommerceAvalaraConnectorConfiguration.class.getName(),
-				commerceAvalaraConnectorConfiguration);
+				CommerceAvalaraConnectorChannelConfiguration.class.getName(),
+				commerceAvalaraConnectorChannelConfiguration);
+
+			if (_verifyConnection(commerceAvalaraConnectorConfiguration)) {
+				httpServletRequest.setAttribute(
+					"connectionEstablished", Boolean.TRUE);
+
+				_setCompanies(httpServletRequest);
+			}
+			else {
+				httpServletRequest.setAttribute(
+					"connectionEstablished", Boolean.FALSE);
+			}
 		}
 		catch (Exception exception) {
 			throw new IOException(exception);
@@ -136,6 +164,38 @@ public class CommerceTaxMethodAvalaraScreenNavigationCategory
 			_servletContext, httpServletRequest, httpServletResponse,
 			"/avalara_settings.jsp");
 	}
+
+	private void _setCompanies(HttpServletRequest httpServletRequest) {
+		Map<String, String> companies = new HashMap<>();
+
+		try {
+			companies = _commerceAvalaraConnector.queryCompanies();
+		}
+		catch (Exception exception) {
+		}
+
+		httpServletRequest.setAttribute("avalaraCompanies", companies);
+	}
+
+	private boolean _verifyConnection(
+		CommerceAvalaraConnectorConfiguration
+			commerceAvalaraConnectorConfiguration) {
+
+		try {
+			_commerceAvalaraConnector.verifyConnection(
+				commerceAvalaraConnectorConfiguration.accountNumber(),
+				commerceAvalaraConnectorConfiguration.licenseKey(),
+				commerceAvalaraConnectorConfiguration.serviceURL());
+
+			return true;
+		}
+		catch (Exception exception) {
+			return false;
+		}
+	}
+
+	@Reference
+	private CommerceAvalaraConnector _commerceAvalaraConnector;
 
 	@Reference
 	private CommerceTaxMethodService _commerceTaxMethodService;
