@@ -24,6 +24,8 @@ import net.avalara.avatax.rest.client.models.TaxCodeModel;
  */
 public interface CommerceAvalaraConnector {
 
+	public String getTaxRateByZipCode() throws Exception;
+
 	public List<TaxCodeModel> listTaxCodes() throws Exception;
 
 	public Map<String, String> queryCompanies() throws Exception;

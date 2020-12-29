@@ -24,4 +24,6 @@ public interface CommerceAvalaraConnectorHelper {
 	public void createTaxCategories(ServiceContext serviceContext)
 		throws Exception;
 
+	public void updateByAddressEntries(long groupId) throws Exception;
+
 }

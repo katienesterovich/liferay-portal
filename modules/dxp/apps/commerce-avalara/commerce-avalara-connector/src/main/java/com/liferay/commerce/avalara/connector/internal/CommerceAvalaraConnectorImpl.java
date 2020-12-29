@@ -26,6 +26,9 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.util.Base64;
 
+import java.text.SimpleDateFormat;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +51,24 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true, service = CommerceAvalaraConnector.class
 )
 public class CommerceAvalaraConnectorImpl implements CommerceAvalaraConnector {
+
+	public String getTaxRateByZipCode() throws Exception {
+		AvaTaxClient avaTaxClient = _getAvaTaxClient();
+
+		Date date = new Date() {
+
+			@Override
+			public String toString() {
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+					"yyyy-MM-dd");
+
+				return simpleDateFormat.format(this);
+			}
+
+		};
+
+		return avaTaxClient.downloadTaxRatesByZipCode(date, null);
+	}
 
 	@Override
 	public List<TaxCodeModel> listTaxCodes() throws Exception {
