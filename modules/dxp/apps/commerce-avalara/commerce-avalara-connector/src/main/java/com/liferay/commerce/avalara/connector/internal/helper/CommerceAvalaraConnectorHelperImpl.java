@@ -15,10 +15,24 @@
 package com.liferay.commerce.avalara.connector.internal.helper;
 
 import com.liferay.commerce.avalara.connector.CommerceAvalaraConnector;
+import com.liferay.commerce.avalara.connector.constants.CommerceAvalaraConstants;
 import com.liferay.commerce.avalara.connector.helper.CommerceAvalaraConnectorHelper;
+import com.liferay.commerce.product.model.CPTaxCategory;
 import com.liferay.commerce.product.service.CPTaxCategoryLocalService;
+import com.liferay.commerce.tax.engine.fixed.model.CommerceTaxFixedRateAddressRel;
+import com.liferay.commerce.tax.engine.fixed.service.CommerceTaxFixedRateAddressRelLocalService;
+import com.liferay.commerce.tax.model.CommerceTaxMethod;
+import com.liferay.commerce.tax.service.CommerceTaxMethodLocalService;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.Country;
+import com.liferay.portal.kernel.model.Region;
+import com.liferay.portal.kernel.service.CountryLocalService;
+import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Collections;
 import java.util.List;
@@ -59,10 +73,122 @@ public class CommerceAvalaraConnectorHelperImpl
 		}
 	}
 
+	public void updateByAddressEntries(long groupId) throws Exception {
+		String taxRateByZipCode =
+			_commerceAvalaraConnector.getTaxRateByZipCode();
+
+		if (Validator.isBlank(taxRateByZipCode)) {
+			return;
+		}
+
+		CommerceTaxMethod commerceTaxMethod =
+			_commerceTaxMethodLocalService.fetchCommerceTaxMethod(
+				groupId, CommerceAvalaraConstants.KEY);
+
+		if (commerceTaxMethod == null) {
+			return;
+		}
+
+		String[] taxRatesByZipCodeLines = StringUtil.splitLines(
+			taxRateByZipCode);
+
+		Country usCountry = _countryLocalService.fetchCountryByA2(
+			commerceTaxMethod.getCompanyId(), "US");
+
+		long cpTaxCategoryId = 0;
+
+		CPTaxCategory tangiblePersonalPropertyCPTaxCategory =
+			_cpTaxCategoryLocalService.fetchCPTaxCategoryByReferenceCode(
+				commerceTaxMethod.getCompanyId(),
+				_TANGIBLE_PERSONAL_PROPERTY_AVALARA_TAX_CODE);
+
+		if (tangiblePersonalPropertyCPTaxCategory != null) {
+			cpTaxCategoryId =
+				tangiblePersonalPropertyCPTaxCategory.getCPTaxCategoryId();
+		}
+
+		for (int i = 1; i < taxRatesByZipCodeLines.length; i++) {
+			String[] taxRatesByZipCodeLine = StringUtil.split(
+				taxRatesByZipCodeLines[i], StringPool.COMMA);
+
+			_upsertByAddressEntry(
+				commerceTaxMethod.getUserId(), groupId, cpTaxCategoryId,
+				commerceTaxMethod.getCommerceTaxMethodId(), usCountry,
+				taxRatesByZipCodeLine
+					[CommerceAvalaraConstants.CSV_REGION_POSITION],
+				taxRatesByZipCodeLine
+					[CommerceAvalaraConstants.CSV_ZIP_CODE_POSITION],
+				GetterUtil.getDouble(
+					taxRatesByZipCodeLine
+						[CommerceAvalaraConstants.
+							CSV_TOTAL_SALES_TAX_POSITION]));
+		}
+	}
+
+	private void _upsertByAddressEntry(
+			long userId, long groupId,
+			long tangiblePersonalPropertyCPTaxCategoryId,
+			long commerceTaxMethodId, Country country, String regionCode,
+			String zip, double rate)
+		throws Exception {
+
+		Region region = _regionLocalService.fetchRegion(
+			country.getCountryId(), regionCode);
+
+		if (region == null) {
+			ServiceContext serviceContext = new ServiceContext();
+
+			serviceContext.setUserId(userId);
+
+			region = _regionLocalService.addRegion(
+				country.getCountryId(), false, regionCode, 0, regionCode,
+				serviceContext);
+		}
+
+		CommerceTaxFixedRateAddressRel commerceTaxFixedRateAddressRel =
+			_commerceTaxFixedRateAddressRelLocalService.
+				fetchCommerceTaxFixedRateAddressRel(
+					commerceTaxMethodId, country.getCountryId(),
+					region.getRegionId(), zip);
+
+		if (commerceTaxFixedRateAddressRel == null) {
+			_commerceTaxFixedRateAddressRelLocalService.
+				addCommerceTaxFixedRateAddressRel(
+					userId, groupId, commerceTaxMethodId,
+					tangiblePersonalPropertyCPTaxCategoryId,
+					country.getCountryId(), region.getRegionId(), zip, rate);
+		}
+		else {
+			commerceTaxFixedRateAddressRel.setCPTaxCategoryId(
+				tangiblePersonalPropertyCPTaxCategoryId);
+			commerceTaxFixedRateAddressRel.setRate(rate);
+
+			_commerceTaxFixedRateAddressRelLocalService.
+				updateCommerceTaxFixedRateAddressRel(
+					commerceTaxFixedRateAddressRel);
+		}
+	}
+
+	private static final String _TANGIBLE_PERSONAL_PROPERTY_AVALARA_TAX_CODE =
+		"P0000000";
+
 	@Reference
 	private CommerceAvalaraConnector _commerceAvalaraConnector;
 
 	@Reference
+	private CommerceTaxFixedRateAddressRelLocalService
+		_commerceTaxFixedRateAddressRelLocalService;
+
+	@Reference
+	private CommerceTaxMethodLocalService _commerceTaxMethodLocalService;
+
+	@Reference
+	private CountryLocalService _countryLocalService;
+
+	@Reference
 	private CPTaxCategoryLocalService _cpTaxCategoryLocalService;
+
+	@Reference
+	private RegionLocalService _regionLocalService;
 
 }

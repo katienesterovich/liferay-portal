@@ -21,4 +21,6 @@ public interface CommerceAvalaraConnectorHelper {
 
 	public void createTaxCategories(long userId) throws Exception;
 
+	public void updateByAddressEntries(long groupId) throws Exception;
+
 }
