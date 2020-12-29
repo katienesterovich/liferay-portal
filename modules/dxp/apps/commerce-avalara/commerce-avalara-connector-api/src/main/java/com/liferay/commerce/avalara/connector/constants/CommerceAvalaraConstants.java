@@ -23,6 +23,8 @@ public class CommerceAvalaraConstants {
 
 	public static final String APP_VERSION = "1.0";
 
+	public static final String AVALARA = "Avalara";
+
 	public static final int CSV_REGION_POSITION = 1;
 
 	public static final int CSV_TOTAL_SALES_TAX_POSITION = 10;
@@ -30,6 +32,8 @@ public class CommerceAvalaraConstants {
 	public static final int CSV_ZIP_CODE_POSITION = 0;
 
 	public static final String DEFAULT = "DEFAULT";
+
+	public static final String GROUP_ID = "groupId";
 
 	public static final String KEY = "avalara";
 
