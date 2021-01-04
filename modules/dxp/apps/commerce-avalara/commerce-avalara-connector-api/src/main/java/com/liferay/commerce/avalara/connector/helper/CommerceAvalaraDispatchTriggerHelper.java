@@ -15,6 +15,7 @@
 package com.liferay.commerce.avalara.connector.helper;
 
 import com.liferay.commerce.tax.model.CommerceTaxMethod;
+import com.liferay.dispatch.model.DispatchLog;
 import com.liferay.dispatch.model.DispatchTrigger;
 
 /**
@@ -26,6 +27,13 @@ public interface CommerceAvalaraDispatchTriggerHelper {
 		CommerceTaxMethod commerceTaxMethod);
 
 	public void deleteDispatchTrigger(CommerceTaxMethod commerceTaxMethod);
+
+	public DispatchLog getLatestDispatchLog(
+		CommerceTaxMethod commerceTaxMethod);
+
+	public boolean jobPreviouslyRun(CommerceTaxMethod commerceTaxMethod);
+
+	public void runJob(CommerceTaxMethod commerceTaxMethod);
 
 	public DispatchTrigger updateDispatchTrigger(
 		CommerceTaxMethod commerceTaxMethod);

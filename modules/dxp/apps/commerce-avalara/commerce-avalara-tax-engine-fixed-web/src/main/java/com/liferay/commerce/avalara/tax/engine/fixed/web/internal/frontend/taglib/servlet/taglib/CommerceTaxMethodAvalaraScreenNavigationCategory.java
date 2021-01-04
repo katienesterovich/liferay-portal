@@ -18,9 +18,11 @@ import com.liferay.commerce.avalara.connector.CommerceAvalaraConnector;
 import com.liferay.commerce.avalara.connector.configuration.CommerceAvalaraConnectorChannelConfiguration;
 import com.liferay.commerce.avalara.connector.configuration.CommerceAvalaraConnectorConfiguration;
 import com.liferay.commerce.avalara.connector.constants.CommerceAvalaraConstants;
+import com.liferay.commerce.avalara.connector.helper.CommerceAvalaraDispatchTriggerHelper;
 import com.liferay.commerce.constants.CommerceTaxScreenNavigationConstants;
 import com.liferay.commerce.tax.model.CommerceTaxMethod;
 import com.liferay.commerce.tax.service.CommerceTaxMethodService;
+import com.liferay.dispatch.model.DispatchLog;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationCategory;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
@@ -141,6 +143,8 @@ public class CommerceTaxMethodAvalaraScreenNavigationCategory
 					"connectionEstablished", Boolean.TRUE);
 
 				_setCompanies(httpServletRequest);
+				_setJobPreviouslyRun(httpServletRequest, commerceTaxMethod);
+				_setLatestJob(httpServletRequest, commerceTaxMethod);
 			}
 			else {
 				httpServletRequest.setAttribute(
@@ -166,6 +170,28 @@ public class CommerceTaxMethodAvalaraScreenNavigationCategory
 		}
 
 		httpServletRequest.setAttribute("avalaraCompanies", companies);
+	}
+
+	private void _setJobPreviouslyRun(
+		HttpServletRequest httpServletRequest,
+		CommerceTaxMethod commerceTaxMethod) {
+
+		boolean jobPreviouslyRun =
+			_commerceAvalaraDispatchTriggerHelper.jobPreviouslyRun(
+				commerceTaxMethod);
+
+		httpServletRequest.setAttribute("jobPreviouslyRun", jobPreviouslyRun);
+	}
+
+	private void _setLatestJob(
+		HttpServletRequest httpServletRequest,
+		CommerceTaxMethod commerceTaxMethod) {
+
+		DispatchLog latestDispatchLog =
+			_commerceAvalaraDispatchTriggerHelper.getLatestDispatchLog(
+				commerceTaxMethod);
+
+		httpServletRequest.setAttribute("latestDispatchLog", latestDispatchLog);
 	}
 
 	private boolean _verifyConnection(
@@ -197,6 +223,10 @@ public class CommerceTaxMethodAvalaraScreenNavigationCategory
 
 	@Reference
 	private CommerceAvalaraConnector _commerceAvalaraConnector;
+
+	@Reference
+	private CommerceAvalaraDispatchTriggerHelper
+		_commerceAvalaraDispatchTriggerHelper;
 
 	@Reference
 	private CommerceTaxMethodService _commerceTaxMethodService;

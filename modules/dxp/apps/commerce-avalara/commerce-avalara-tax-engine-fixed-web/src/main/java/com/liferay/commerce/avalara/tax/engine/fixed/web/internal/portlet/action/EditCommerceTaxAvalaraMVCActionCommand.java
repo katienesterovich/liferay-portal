@@ -15,6 +15,7 @@
 package com.liferay.commerce.avalara.tax.engine.fixed.web.internal.portlet.action;
 
 import com.liferay.commerce.avalara.connector.configuration.CommerceAvalaraConnectorChannelConfiguration;
+import com.liferay.commerce.avalara.connector.helper.CommerceAvalaraDispatchTriggerHelper;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.tax.model.CommerceTaxMethod;
 import com.liferay.commerce.tax.service.CommerceTaxMethodService;
@@ -24,6 +25,7 @@ import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.ModifiableSettings;
 import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.settings.SettingsFactory;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 
 import javax.portlet.ActionRequest;
@@ -51,7 +53,15 @@ public class EditCommerceTaxAvalaraMVCActionCommand
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		_updateCommerceTaxAvalara(actionRequest);
+		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
+
+		if (cmd.equals("runNow")) {
+			_commerceAvalaraDispatchTriggerHelper.runJob(
+				_getCommerceTaxMethod(actionRequest));
+		}
+		else {
+			_updateCommerceTaxAvalara(actionRequest);
+		}
 	}
 
 	private CommerceTaxMethod _getCommerceTaxMethod(ActionRequest actionRequest)
@@ -91,6 +101,10 @@ public class EditCommerceTaxAvalaraMVCActionCommand
 
 		modifiableSettings.store();
 	}
+
+	@Reference
+	private CommerceAvalaraDispatchTriggerHelper
+		_commerceAvalaraDispatchTriggerHelper;
 
 	@Reference
 	private CommerceTaxMethodService _commerceTaxMethodService;
