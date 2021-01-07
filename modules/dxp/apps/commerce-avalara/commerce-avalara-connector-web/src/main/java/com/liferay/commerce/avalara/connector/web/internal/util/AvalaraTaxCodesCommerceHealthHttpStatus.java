@@ -26,10 +26,14 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
+import com.liferay.portal.kernel.transaction.Propagation;
+import com.liferay.portal.kernel.transaction.TransactionConfig;
+import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.concurrent.Callable;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -54,14 +58,18 @@ public class AvalaraTaxCodesCommerceHealthHttpStatus
 	public void fixIssue(HttpServletRequest httpServletRequest)
 		throws PortalException {
 
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			httpServletRequest);
-
 		try {
-			_commerceAvalaraConnectorHelper.createTaxCategories(serviceContext);
+			ServiceContext serviceContext = ServiceContextFactory.getInstance(
+				httpServletRequest);
+
+			Callable<Object> pricingCallable =
+				new AvalaraTaxCodesCommerceHealthHttpStatus.
+					AvalaraTaxCodesCallable(serviceContext);
+
+			TransactionInvokerUtil.invoke(_transactionConfig, pricingCallable);
 		}
-		catch (Exception exception) {
-			_log.error(exception, exception);
+		catch (Throwable throwable) {
+			_log.error(throwable, throwable);
 		}
 	}
 
@@ -119,10 +127,37 @@ public class AvalaraTaxCodesCommerceHealthHttpStatus
 	private static final Log _log = LogFactoryUtil.getLog(
 		AvalaraTaxCodesCommerceHealthHttpStatus.class);
 
+	private static final TransactionConfig _transactionConfig =
+		TransactionConfig.Factory.create(
+			Propagation.REQUIRED, new Class<?>[] {Exception.class});
+
 	@Reference
 	private CommerceAvalaraConnectorHelper _commerceAvalaraConnectorHelper;
 
 	@Reference
 	private CPTaxCategoryLocalService _cpTaxCategoryLocalService;
+
+	private class AvalaraTaxCodesCallable implements Callable<Object> {
+
+		@Override
+		public Object call() throws Exception {
+			try {
+				_commerceAvalaraConnectorHelper.createTaxCategories(
+					_serviceContext.getUserId());
+			}
+			catch (Exception exception) {
+				_log.error(exception, exception);
+			}
+
+			return null;
+		}
+
+		private AvalaraTaxCodesCallable(ServiceContext serviceContext) {
+			_serviceContext = serviceContext;
+		}
+
+		private final ServiceContext _serviceContext;
+
+	}
 
 }

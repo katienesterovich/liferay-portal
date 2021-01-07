@@ -61,11 +61,13 @@ public class CommerceAvalaraConnectorHelperImpl
 	implements CommerceAvalaraConnectorHelper {
 
 	@Override
-	public void createTaxCategories(ServiceContext serviceContext)
-		throws Exception {
-
+	public void createTaxCategories(long userId) throws Exception {
 		List<TaxCodeModel> taxCodeModels =
 			_commerceAvalaraConnector.listTaxCodes();
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setUserId(userId);
 
 		for (TaxCodeModel taxCodeModel : taxCodeModels) {
 			Map<Locale, String> nameMap = Collections.singletonMap(
