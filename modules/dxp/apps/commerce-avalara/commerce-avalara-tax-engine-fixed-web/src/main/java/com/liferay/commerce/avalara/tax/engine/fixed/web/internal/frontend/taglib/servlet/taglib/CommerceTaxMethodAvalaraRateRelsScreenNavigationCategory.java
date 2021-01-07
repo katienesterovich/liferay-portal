@@ -59,7 +59,7 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = {ScreenNavigationCategory.class, ScreenNavigationEntry.class}
 )
-public class CommerceTaxMethodAvalaraRateRelsScreenNavigationEntry
+public class CommerceTaxMethodAvalaraRateRelsScreenNavigationCategory
 	implements ScreenNavigationCategory,
 			   ScreenNavigationEntry<CommerceTaxMethod> {
 

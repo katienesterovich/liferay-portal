@@ -17,9 +17,7 @@
 <aui:button cssClass="btn-lg btn-secondary" onClick='<%= liferayPortletResponse.getNamespace() + "runNow();" %>' type="submit" value="sync-tax-rates" />
 
 <aui:script>
-	Liferay.provide(window, '<portlet:namespace />runNow', function (
-		evt
-	) {
+	Liferay.provide(window, '<portlet:namespace />runNow', function (evt) {
 		const inputCmd = document.querySelector(
 			'#<portlet:namespace /><%= Constants.CMD %>'
 		);
