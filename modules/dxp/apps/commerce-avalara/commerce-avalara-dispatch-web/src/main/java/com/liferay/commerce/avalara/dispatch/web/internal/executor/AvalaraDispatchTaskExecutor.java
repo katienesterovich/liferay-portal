@@ -48,7 +48,7 @@ public class AvalaraDispatchTaskExecutor extends BaseDispatchTaskExecutor {
 		throws PortalException {
 
 		UnicodeProperties unicodeProperties =
-			dispatchTrigger.getTaskSettingsUnicodeProperties();
+			dispatchTrigger.getDispatchTaskSettingsUnicodeProperties();
 
 		String groupId = GetterUtil.getString(
 			unicodeProperties.getProperty(_GROUP_ID));

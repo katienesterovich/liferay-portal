@@ -68,8 +68,8 @@ public class CommerceAvalaraDispatchTriggerHelperImpl
 				String.valueOf(commerceTaxMethod.getGroupId()));
 
 			dispatchTrigger = _dispatchTriggerLocalService.addDispatchTrigger(
-				commerceTaxMethod.getUserId(), triggerName, Boolean.FALSE,
-				commerceTaxMethod.getEngineKey(), unicodeProperties);
+				commerceTaxMethod.getUserId(), commerceTaxMethod.getEngineKey(),
+				unicodeProperties, triggerName, Boolean.FALSE);
 
 			dispatchTrigger.setCronExpression(
 				_EVERY_MONTH_ON_THE_FIRST_CRON_EXPRESSION);
