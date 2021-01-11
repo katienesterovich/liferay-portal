@@ -194,7 +194,7 @@ public class CommerceAvalaraDispatchTriggerHelperImpl
 					commerceTaxMethod.getGroupId());
 		}
 		catch (PortalException portalException) {
-			_log.error("Could not get CommerceChannel", portalException);
+			_log.error("Could not get commerce channel", portalException);
 		}
 
 		return commerceChannel;
@@ -226,6 +226,7 @@ public class CommerceAvalaraDispatchTriggerHelperImpl
 		DispatchTrigger dispatchTrigger) {
 
 		DynamicQuery dynamicQuery = _dispatchLogLocalService.dynamicQuery();
+
 		Property dispatchTriggerId = PropertyFactoryUtil.forName(
 			"dispatchTriggerId");
 

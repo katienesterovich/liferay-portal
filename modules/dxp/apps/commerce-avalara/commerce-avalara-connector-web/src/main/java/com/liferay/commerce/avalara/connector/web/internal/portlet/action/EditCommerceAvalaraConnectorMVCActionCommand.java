@@ -43,7 +43,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CommerceAvalaraPortletKeys.COMMERCE_AVALARA,
-		"mvc.command.name=/commerce_avalara_connector/edit_commerce_avalara_connector"
+		"mvc.command.name=/commerce_avalara/edit_commerce_avalara_connector"
 	},
 	service = MVCActionCommand.class
 )

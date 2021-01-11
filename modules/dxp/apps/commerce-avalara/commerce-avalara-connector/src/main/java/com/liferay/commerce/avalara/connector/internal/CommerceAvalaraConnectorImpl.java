@@ -92,9 +92,9 @@ public class CommerceAvalaraConnectorImpl implements CommerceAvalaraConnector {
 
 		Map<String, String> companyNamesWithCodes = new HashMap<>();
 
-		for (CompanyModel company : companyModelFetchResult.getValue()) {
+		for (CompanyModel companyModel : companyModelFetchResult.getValue()) {
 			companyNamesWithCodes.put(
-				company.getName(), company.getCompanyCode());
+				companyModel.getName(), companyModel.getCompanyCode());
 		}
 
 		return companyNamesWithCodes;

@@ -106,24 +106,24 @@ public class CommerceAvalaraConnectorHelperImpl
 		String[] taxRatesByZipCodeLines = StringUtil.splitLines(
 			taxRateByZipCode);
 
-		CommerceCountry commerceCountryUS =
+		CommerceCountry usCommerceCountry =
 			_commerceCountryLocalService.fetchCommerceCountry(
 				commerceTaxMethod.getCompanyId(), "US");
 
-		if (commerceCountryUS == null) {
-			commerceCountryUS = _addUnitedStates(commerceTaxMethod);
+		if (usCommerceCountry == null) {
+			usCommerceCountry = _addUnitedStates(commerceTaxMethod);
 		}
 
 		long cpTaxCategoryId = 0;
 
-		CPTaxCategory tangiblePersonalPropertyTaxCategory =
+		CPTaxCategory tangiblePersonalPropertyCPTaxCategory =
 			_cpTaxCategoryLocalService.fetchCPTaxCategoryByReferenceCode(
 				commerceTaxMethod.getCompanyId(),
 				_TANGIBLE_PERSONAL_PROPERTY_AVALARA_TAX_CODE);
 
-		if (tangiblePersonalPropertyTaxCategory != null) {
+		if (tangiblePersonalPropertyCPTaxCategory != null) {
 			cpTaxCategoryId =
-				tangiblePersonalPropertyTaxCategory.getCPTaxCategoryId();
+				tangiblePersonalPropertyCPTaxCategory.getCPTaxCategoryId();
 		}
 
 		for (int i = 1; i < taxRatesByZipCodeLines.length; i++) {
@@ -132,7 +132,7 @@ public class CommerceAvalaraConnectorHelperImpl
 
 			_upsertByAddressEntry(
 				commerceTaxMethod.getUserId(), groupId, cpTaxCategoryId,
-				commerceTaxMethod.getCommerceTaxMethodId(), commerceCountryUS,
+				commerceTaxMethod.getCommerceTaxMethodId(), usCommerceCountry,
 				taxRatesByZipCodeLine
 					[CommerceAvalaraConstants.CSV_REGION_POSITION],
 				taxRatesByZipCodeLine
@@ -176,7 +176,8 @@ public class CommerceAvalaraConnectorHelperImpl
 	}
 
 	private void _upsertByAddressEntry(
-			long userId, long groupId, long tppTaxCategoryId,
+			long userId, long groupId,
+			long tangiblePersonalPropertyCPTaxCategoryId,
 			long commerceTaxMethodId, CommerceCountry commerceCountry,
 			String regionCode, String zip, double rate)
 		throws Exception {
@@ -206,12 +207,14 @@ public class CommerceAvalaraConnectorHelperImpl
 		if (commerceTaxFixedRateAddressRel == null) {
 			_commerceTaxFixedRateAddressRelLocalService.
 				addCommerceTaxFixedRateAddressRel(
-					userId, groupId, commerceTaxMethodId, tppTaxCategoryId,
+					userId, groupId, commerceTaxMethodId,
+					tangiblePersonalPropertyCPTaxCategoryId,
 					commerceCountry.getCommerceCountryId(),
 					commerceRegion.getCommerceRegionId(), zip, rate);
 		}
 		else {
-			commerceTaxFixedRateAddressRel.setCPTaxCategoryId(tppTaxCategoryId);
+			commerceTaxFixedRateAddressRel.setCPTaxCategoryId(
+				tangiblePersonalPropertyCPTaxCategoryId);
 			commerceTaxFixedRateAddressRel.setRate(rate);
 
 			_commerceTaxFixedRateAddressRelLocalService.
