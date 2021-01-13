@@ -15,7 +15,7 @@
 package com.liferay.commerce.avalara.tax.engine.fixed.web.internal.frontend.taglib.servlet.taglib;
 
 import com.liferay.commerce.avalara.connector.constants.CommerceAvalaraConstants;
-import com.liferay.commerce.avalara.tax.engine.fixed.web.internal.display.context.CommerceTaxAvalaraRateRelsDisplayContext;
+import com.liferay.commerce.avalara.tax.engine.fixed.web.internal.display.context.CommerceAvalaraTaxRateRelsDisplayContext;
 import com.liferay.commerce.constants.CommerceTaxScreenNavigationConstants;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.percentage.PercentageFormatter;
@@ -116,9 +116,9 @@ public class CommerceTaxMethodAvalaraRateRelsScreenNavigationCategory
 			(RenderRequest)httpServletRequest.getAttribute(
 				JavaConstants.JAVAX_PORTLET_REQUEST);
 
-		CommerceTaxAvalaraRateRelsDisplayContext
+		CommerceAvalaraTaxRateRelsDisplayContext
 			commerceTaxAvalaraRelsDisplayContext =
-				new CommerceTaxAvalaraRateRelsDisplayContext(
+				new CommerceAvalaraTaxRateRelsDisplayContext(
 					_commerceChannelLocalService,
 					_commerceChannelModelResourcePermission,
 					_commerceCurrencyLocalService, _commerceTaxMethodService,
