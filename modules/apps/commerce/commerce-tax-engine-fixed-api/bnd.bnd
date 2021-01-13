@@ -4,6 +4,7 @@ Bundle-Version: 5.0.1
 Export-Package:\
 	com.liferay.commerce.tax.engine.fixed.configuration,\
 	com.liferay.commerce.tax.engine.fixed.exception,\
+	com.liferay.commerce.tax.engine.fixed.frontend.constants,\
 	com.liferay.commerce.tax.engine.fixed.model,\
 	com.liferay.commerce.tax.engine.fixed.service,\
 	com.liferay.commerce.tax.engine.fixed.service.persistence,\
