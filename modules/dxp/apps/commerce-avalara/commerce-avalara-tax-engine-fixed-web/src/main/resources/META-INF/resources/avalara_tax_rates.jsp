@@ -17,7 +17,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-CommerceTaxAvalaraRateRelsDisplayContext commerceTaxAvalaraRateRelsDisplayContext = (CommerceTaxAvalaraRateRelsDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
+CommerceAvalaraTaxRateRelsDisplayContext commerceAvalaraTaxRateRelsDisplayContext = (CommerceAvalaraTaxRateRelsDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 %>
 
 <portlet:actionURL name="editCommerceTaxFixedRateAddressRel" var="editCommerceTaxFixedRateAddressRelActionURL" />
@@ -25,22 +25,22 @@ CommerceTaxAvalaraRateRelsDisplayContext commerceTaxAvalaraRateRelsDisplayContex
 <aui:form action="<%= editCommerceTaxFixedRateAddressRelActionURL %>" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="updateConfiguration" />
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
-	<aui:input name="commerceChannelId" type="hidden" value="<%= commerceTaxAvalaraRateRelsDisplayContext.getCommerceChannelId() %>" />
-	<aui:input name="commerceTaxMethodId" type="hidden" value="<%= commerceTaxAvalaraRateRelsDisplayContext.getCommerceTaxMethodId() %>" />
+	<aui:input name="commerceChannelId" type="hidden" value="<%= commerceAvalaraTaxRateRelsDisplayContext.getCommerceChannelId() %>" />
+	<aui:input name="commerceTaxMethodId" type="hidden" value="<%= commerceAvalaraTaxRateRelsDisplayContext.getCommerceTaxMethodId() %>" />
 
 	<clay:data-set-display
 		contextParams='<%=
 			HashMapBuilder.<String, String>put(
-				"commerceChannelId", String.valueOf(commerceTaxAvalaraRateRelsDisplayContext.getCommerceChannelId())
+				"commerceChannelId", String.valueOf(commerceAvalaraTaxRateRelsDisplayContext.getCommerceChannelId())
 			).put(
-				"commerceTaxMethodId", String.valueOf(commerceTaxAvalaraRateRelsDisplayContext.getCommerceTaxMethodId())
+				"commerceTaxMethodId", String.valueOf(commerceAvalaraTaxRateRelsDisplayContext.getCommerceTaxMethodId())
 			).build()
 		%>'
 		dataProviderKey="<%= CommerceTaxRateSettingDataSetConstants.COMMERCE_DATA_SET_KEY_TAX_RATE_SETTING %>"
-		id="<%= commerceTaxAvalaraRateRelsDisplayContext.getDatasetView() %>"
+		id="<%= commerceAvalaraTaxRateRelsDisplayContext.getDatasetView() %>"
 		itemsPerPage="<%= 10 %>"
 		namespace="<%= liferayPortletResponse.getNamespace() %>"
 		pageNumber="<%= 1 %>"
-		portletURL="<%= commerceTaxAvalaraRateRelsDisplayContext.getPortletURL() %>"
+		portletURL="<%= commerceAvalaraTaxRateRelsDisplayContext.getPortletURL() %>"
 	/>
 </aui:form>

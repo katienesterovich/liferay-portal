@@ -14,7 +14,7 @@
 
 package com.liferay.commerce.avalara.tax.engine.fixed.web.internal.display.context;
 
-import com.liferay.commerce.avalara.tax.engine.fixed.web.internal.display.context.util.CommerceTaxFixedRateRequestHelper;
+import com.liferay.commerce.avalara.tax.engine.fixed.web.internal.display.context.util.CommerceAvalaraTaxRateRequestHelper;
 import com.liferay.commerce.constants.CommerceTaxScreenNavigationConstants;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.percentage.PercentageFormatter;
@@ -36,9 +36,9 @@ import javax.portlet.RenderRequest;
  * @author Marco Leo
  * @author Alessio Antonio Rendina
  */
-public class BaseCommerceTaxFixedRateDisplayContext {
+public class BaseCommerceAvalaraTaxRateDisplayContext {
 
-	public BaseCommerceTaxFixedRateDisplayContext(
+	public BaseCommerceAvalaraTaxRateDisplayContext(
 		CommerceChannelLocalService commerceChannelLocalService,
 		ModelResourcePermission<CommerceChannel>
 			commerceChannelModelResourcePermission,
@@ -55,8 +55,8 @@ public class BaseCommerceTaxFixedRateDisplayContext {
 		this.cpTaxCategoryService = cpTaxCategoryService;
 		this.percentageFormatter = percentageFormatter;
 
-		commerceTaxFixedRateRequestHelper =
-			new CommerceTaxFixedRateRequestHelper(renderRequest);
+		commerceAvalaraTaxRateRequestHelper =
+			new CommerceAvalaraTaxRateRequestHelper(renderRequest);
 	}
 
 	public long getCommerceChannelId() throws PortalException {
@@ -71,7 +71,7 @@ public class BaseCommerceTaxFixedRateDisplayContext {
 		}
 
 		return ParamUtil.getLong(
-			commerceTaxFixedRateRequestHelper.getRequest(),
+			commerceAvalaraTaxRateRequestHelper.getRequest(),
 			"commerceChannelId");
 	}
 
@@ -92,13 +92,13 @@ public class BaseCommerceTaxFixedRateDisplayContext {
 
 	public long getCommerceTaxMethodId() throws PortalException {
 		return ParamUtil.getLong(
-			commerceTaxFixedRateRequestHelper.getRequest(),
+			commerceAvalaraTaxRateRequestHelper.getRequest(),
 			"commerceTaxMethodId");
 	}
 
 	public PortletURL getPortletURL() throws PortalException {
 		LiferayPortletResponse liferayPortletResponse =
-			commerceTaxFixedRateRequestHelper.getLiferayPortletResponse();
+			commerceAvalaraTaxRateRequestHelper.getLiferayPortletResponse();
 
 		PortletURL portletURL = liferayPortletResponse.createRenderURL();
 
@@ -109,7 +109,7 @@ public class BaseCommerceTaxFixedRateDisplayContext {
 			getSelectedScreenNavigationCategoryKey());
 
 		String redirect = ParamUtil.getString(
-			commerceTaxFixedRateRequestHelper.getRequest(), "redirect");
+			commerceAvalaraTaxRateRequestHelper.getRequest(), "redirect");
 
 		if (Validator.isNotNull(redirect)) {
 			portletURL.setParameter("redirect", redirect);
@@ -124,14 +124,14 @@ public class BaseCommerceTaxFixedRateDisplayContext {
 		}
 
 		String engineKey = ParamUtil.getString(
-			commerceTaxFixedRateRequestHelper.getRequest(), "engineKey");
+			commerceAvalaraTaxRateRequestHelper.getRequest(), "engineKey");
 
 		if (Validator.isNotNull(engineKey)) {
 			portletURL.setParameter("engineKey", engineKey);
 		}
 
 		String delta = ParamUtil.getString(
-			commerceTaxFixedRateRequestHelper.getRequest(), "delta");
+			commerceAvalaraTaxRateRequestHelper.getRequest(), "delta");
 
 		if (Validator.isNotNull(delta)) {
 			portletURL.setParameter("delta", delta);
@@ -147,16 +147,16 @@ public class BaseCommerceTaxFixedRateDisplayContext {
 
 	protected String getSelectedScreenNavigationCategoryKey() {
 		return ParamUtil.getString(
-			commerceTaxFixedRateRequestHelper.getRequest(),
+			commerceAvalaraTaxRateRequestHelper.getRequest(),
 			"screenNavigationCategoryKey", getScreenNavigationCategoryKey());
 	}
 
+	protected final CommerceAvalaraTaxRateRequestHelper
+		commerceAvalaraTaxRateRequestHelper;
 	protected final CommerceChannelLocalService commerceChannelLocalService;
 	protected final ModelResourcePermission<CommerceChannel>
 		commerceChannelModelResourcePermission;
 	protected final CommerceCurrencyLocalService commerceCurrencyLocalService;
-	protected final CommerceTaxFixedRateRequestHelper
-		commerceTaxFixedRateRequestHelper;
 	protected final CommerceTaxMethodService commerceTaxMethodService;
 	protected final CPTaxCategoryService cpTaxCategoryService;
 	protected final PercentageFormatter percentageFormatter;

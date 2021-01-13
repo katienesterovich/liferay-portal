@@ -22,9 +22,9 @@ import javax.portlet.RenderRequest;
 /**
  * @author Marco Leo
  */
-public class CommerceTaxFixedRateRequestHelper extends BaseRequestHelper {
+public class CommerceAvalaraTaxRateRequestHelper extends BaseRequestHelper {
 
-	public CommerceTaxFixedRateRequestHelper(RenderRequest renderRequest) {
+	public CommerceAvalaraTaxRateRequestHelper(RenderRequest renderRequest) {
 		super(PortalUtil.getHttpServletRequest(renderRequest));
 	}
 

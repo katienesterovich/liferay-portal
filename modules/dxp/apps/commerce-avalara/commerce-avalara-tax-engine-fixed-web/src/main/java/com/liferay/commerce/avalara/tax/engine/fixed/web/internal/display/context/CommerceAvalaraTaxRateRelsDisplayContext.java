@@ -32,10 +32,10 @@ import javax.portlet.RenderRequest;
  * @author Marco Leo
  * @author Alessio Antonio Rendina
  */
-public class CommerceTaxAvalaraRateRelsDisplayContext
-	extends BaseCommerceTaxFixedRateDisplayContext {
+public class CommerceAvalaraTaxRateRelsDisplayContext
+	extends BaseCommerceAvalaraTaxRateDisplayContext {
 
-	public CommerceTaxAvalaraRateRelsDisplayContext(
+	public CommerceAvalaraTaxRateRelsDisplayContext(
 		CommerceChannelLocalService commerceChannelLocalService,
 		ModelResourcePermission<CommerceChannel>
 			commerceChannelModelResourcePermission,
