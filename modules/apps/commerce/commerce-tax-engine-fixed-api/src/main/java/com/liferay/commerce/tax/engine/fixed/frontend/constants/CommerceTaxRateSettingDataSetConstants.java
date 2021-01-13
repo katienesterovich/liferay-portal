@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.commerce.tax.engine.fixed.web.internal.frontend.constants;
+package com.liferay.commerce.tax.engine.fixed.frontend.constants;
 
 /**
  * @author Alec Sloan
