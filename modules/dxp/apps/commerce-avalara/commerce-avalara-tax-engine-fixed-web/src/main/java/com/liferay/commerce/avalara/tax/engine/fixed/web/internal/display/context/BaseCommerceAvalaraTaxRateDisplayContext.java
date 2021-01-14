@@ -103,7 +103,8 @@ public class BaseCommerceAvalaraTaxRateDisplayContext {
 		PortletURL portletURL = liferayPortletResponse.createRenderURL();
 
 		portletURL.setParameter(
-			"mvcRenderCommandName", "editCommerceTaxMethod");
+			"mvcRenderCommandName",
+			"/commerce_tax_methods/edit_commerce_tax_method");
 		portletURL.setParameter(
 			"screenNavigationCategoryKey",
 			getSelectedScreenNavigationCategoryKey());
