@@ -175,6 +175,10 @@ public class CommerceAvalaraConnectorHelperImpl
 		return commerceCountry;
 	}
 
+	private double _convertDecimalToPercent(double decimal) {
+		return decimal * 100;
+	}
+
 	private void _upsertByAddressEntry(
 			long userId, long groupId,
 			long tangiblePersonalPropertyCPTaxCategoryId,
@@ -183,6 +187,8 @@ public class CommerceAvalaraConnectorHelperImpl
 		throws Exception {
 
 		CommerceRegion commerceRegion;
+
+		rate = _convertDecimalToPercent(rate);
 
 		try {
 			commerceRegion = _commerceRegionLocalService.getCommerceRegion(
