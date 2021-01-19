@@ -14,8 +14,8 @@
 
 package com.liferay.commerce.avalara.connector.web.internal.util;
 
+import com.liferay.commerce.avalara.connector.constants.CommerceAvalaraConstants;
 import com.liferay.commerce.avalara.connector.helper.CommerceAvalaraConnectorHelper;
-import com.liferay.commerce.avalara.connector.web.internal.constants.CommerceAvalaraConstants;
 import com.liferay.commerce.constants.CommerceHealthStatusConstants;
 import com.liferay.commerce.health.status.CommerceHealthHttpStatus;
 import com.liferay.commerce.product.model.CPTaxCategory;
@@ -113,7 +113,7 @@ public class AvalaraTaxCodesCommerceHealthHttpStatus
 
 		CPTaxCategory cpTaxCategory =
 			_cpTaxCategoryLocalService.fetchCPTaxCategoryByReferenceCode(
-				companyId, _TANGIBLE_PERSONAL_PROPERTY);
+				companyId, CommerceAvalaraConstants.TANGIBLE_PERSONAL_PROPERTY);
 
 		if (cpTaxCategory == null) {
 			return false;
@@ -121,8 +121,6 @@ public class AvalaraTaxCodesCommerceHealthHttpStatus
 
 		return true;
 	}
-
-	private static final String _TANGIBLE_PERSONAL_PROPERTY = "P0000000";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AvalaraTaxCodesCommerceHealthHttpStatus.class);

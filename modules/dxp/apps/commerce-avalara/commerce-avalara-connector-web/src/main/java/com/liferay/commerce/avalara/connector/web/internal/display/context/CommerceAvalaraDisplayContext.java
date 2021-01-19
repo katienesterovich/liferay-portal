@@ -14,7 +14,7 @@
 
 package com.liferay.commerce.avalara.connector.web.internal.display.context;
 
-import com.liferay.commerce.avalara.connector.web.internal.constants.CommerceAvalaraConstants;
+import com.liferay.commerce.avalara.connector.constants.CommerceAvalaraConstants;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
