@@ -133,6 +133,10 @@ public class CommerceAvalaraConnectorHelperImpl
 		}
 	}
 
+	private double _convertDecimalToPercent(double decimal) {
+		return decimal * 100;
+	}
+
 	private void _upsertByAddressEntry(
 			long userId, long groupId,
 			long tangiblePersonalPropertyCPTaxCategoryId,
@@ -158,6 +162,8 @@ public class CommerceAvalaraConnectorHelperImpl
 				fetchCommerceTaxFixedRateAddressRel(
 					commerceTaxMethodId, country.getCountryId(),
 					region.getRegionId(), zip);
+
+		rate = _convertDecimalToPercent(rate);
 
 		if (commerceTaxFixedRateAddressRel == null) {
 			_commerceTaxFixedRateAddressRelLocalService.
