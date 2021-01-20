@@ -50,4 +50,5 @@ CommerceAvalaraConnectorChannelConfiguration commerceAvalaraConnectorChannelConf
 	</aui:select>
 
 	<aui:input id="avalara-disabled-document-recording" label="disable-document-recording" name="disabledDocumentRecording" type="toggle-switch" value="<%= commerceAvalaraConnectorChannelConfiguration.disabledDocumentRecording() %>" />
+	<aui:input id="avalara-disabled-address-validation" label="disable-address-validation" name="disabledAddressValidation" type="toggle-switch" value="<%= commerceAvalaraConnectorChannelConfiguration.disabledAddressValidation() %>" />
 </liferay-frontend:fieldset>

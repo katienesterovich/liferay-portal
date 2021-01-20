@@ -92,8 +92,15 @@ public class EditCommerceTaxAvalaraMVCActionCommand
 
 		modifiableSettings.setValue("companyCode", companyCode);
 
+		Boolean disabledAddressValidation = ParamUtil.getBoolean(
+			actionRequest, "disabledAddressValidation");
+
 		Boolean disabledDocumentRecording = ParamUtil.getBoolean(
 			actionRequest, "disabledDocumentRecording");
+
+		modifiableSettings.setValue(
+			"disabledAddressValidation",
+			String.valueOf(disabledAddressValidation));
 
 		modifiableSettings.setValue(
 			"disabledDocumentRecording",

@@ -34,4 +34,9 @@ public interface CommerceAvalaraConnectorChannelConfiguration {
 	)
 	public boolean disabledDocumentRecording();
 
+	@Meta.AD(
+		deflt = "false", name = "disabled-address-validation", required = false
+	)
+	public boolean disabledAddressValidation();
+
 }
