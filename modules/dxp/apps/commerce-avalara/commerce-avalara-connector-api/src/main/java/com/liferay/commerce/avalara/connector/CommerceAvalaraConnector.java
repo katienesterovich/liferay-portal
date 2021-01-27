@@ -14,15 +14,22 @@
 
 package com.liferay.commerce.avalara.connector;
 
+import com.liferay.commerce.model.CommerceOrder;
+
 import java.util.List;
 import java.util.Map;
 
 import net.avalara.avatax.rest.client.models.TaxCodeModel;
+import net.avalara.avatax.rest.client.models.TransactionModel;
 
 /**
  * @author Riccardo Alberti
  */
 public interface CommerceAvalaraConnector {
+
+	public TransactionModel createSalesOrderTransaction(
+			CommerceOrder commerceOrder)
+		throws Exception;
 
 	public String getTaxRateByZipCode() throws Exception;
 

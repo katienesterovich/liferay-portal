@@ -39,4 +39,6 @@ public class CommerceAvalaraConstants {
 
 	public static final String MACHINE_NAME = "Liferay";
 
+	public static final String SHIPPING_LINE_ITEM = "shipping";
+
 }

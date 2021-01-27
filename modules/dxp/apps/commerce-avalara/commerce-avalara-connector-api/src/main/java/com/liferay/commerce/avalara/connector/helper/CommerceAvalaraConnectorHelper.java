@@ -14,6 +14,7 @@
 
 package com.liferay.commerce.avalara.connector.helper;
 
+import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.tax.model.CommerceTaxMethod;
 
 /**
@@ -26,5 +27,8 @@ public interface CommerceAvalaraConnectorHelper {
 	public void removeByAddressEntries(CommerceTaxMethod commerceTaxMethod);
 
 	public void updateByAddressEntries(long groupId) throws Exception;
+
+	public CommerceOrder updateSalesOrderTaxInfo(CommerceOrder commerceOrder)
+		throws Exception;
 
 }
