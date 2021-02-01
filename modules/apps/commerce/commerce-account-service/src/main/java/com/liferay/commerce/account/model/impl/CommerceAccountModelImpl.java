@@ -79,8 +79,9 @@ public class CommerceAccountModelImpl
 		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
 		{"parentCommerceAccountId", Types.BIGINT}, {"name", Types.VARCHAR},
 		{"logoId", Types.BIGINT}, {"email", Types.VARCHAR},
-		{"taxId", Types.VARCHAR}, {"type_", Types.INTEGER},
-		{"active_", Types.BOOLEAN}, {"displayDate", Types.TIMESTAMP},
+		{"taxId", Types.VARCHAR}, {"taxExemptionCode", Types.VARCHAR},
+		{"type_", Types.INTEGER}, {"active_", Types.BOOLEAN},
+		{"displayDate", Types.TIMESTAMP},
 		{"defaultBillingAddressId", Types.BIGINT},
 		{"defaultShippingAddressId", Types.BIGINT},
 		{"expirationDate", Types.TIMESTAMP},
@@ -105,6 +106,7 @@ public class CommerceAccountModelImpl
 		TABLE_COLUMNS_MAP.put("logoId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("email", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("taxId", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("taxExemptionCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("type_", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("active_", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("displayDate", Types.TIMESTAMP);
@@ -119,7 +121,7 @@ public class CommerceAccountModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CommerceAccount (externalReferenceCode VARCHAR(75) null,commerceAccountId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,parentCommerceAccountId LONG,name VARCHAR(255) null,logoId LONG,email VARCHAR(75) null,taxId VARCHAR(75) null,type_ INTEGER,active_ BOOLEAN,displayDate DATE null,defaultBillingAddressId LONG,defaultShippingAddressId LONG,expirationDate DATE null,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
+		"create table CommerceAccount (externalReferenceCode VARCHAR(75) null,commerceAccountId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,parentCommerceAccountId LONG,name VARCHAR(255) null,logoId LONG,email VARCHAR(75) null,taxId VARCHAR(75) null,taxExemptionCode VARCHAR(75) null,type_ INTEGER,active_ BOOLEAN,displayDate DATE null,defaultBillingAddressId LONG,defaultShippingAddressId LONG,expirationDate DATE null,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
 
 	public static final String TABLE_SQL_DROP = "drop table CommerceAccount";
 
@@ -212,6 +214,7 @@ public class CommerceAccountModelImpl
 		model.setLogoId(soapModel.getLogoId());
 		model.setEmail(soapModel.getEmail());
 		model.setTaxId(soapModel.getTaxId());
+		model.setTaxExemptionCode(soapModel.getTaxExemptionCode());
 		model.setType(soapModel.getType());
 		model.setActive(soapModel.isActive());
 		model.setDisplayDate(soapModel.getDisplayDate());
@@ -442,6 +445,12 @@ public class CommerceAccountModelImpl
 		attributeSetterBiConsumers.put(
 			"taxId",
 			(BiConsumer<CommerceAccount, String>)CommerceAccount::setTaxId);
+		attributeGetterFunctions.put(
+			"taxExemptionCode", CommerceAccount::getTaxExemptionCode);
+		attributeSetterBiConsumers.put(
+			"taxExemptionCode",
+			(BiConsumer<CommerceAccount, String>)
+				CommerceAccount::setTaxExemptionCode);
 		attributeGetterFunctions.put("type", CommerceAccount::getType);
 		attributeSetterBiConsumers.put(
 			"type",
@@ -762,6 +771,26 @@ public class CommerceAccountModelImpl
 		}
 
 		_taxId = taxId;
+	}
+
+	@JSON
+	@Override
+	public String getTaxExemptionCode() {
+		if (_taxExemptionCode == null) {
+			return "";
+		}
+		else {
+			return _taxExemptionCode;
+		}
+	}
+
+	@Override
+	public void setTaxExemptionCode(String taxExemptionCode) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_taxExemptionCode = taxExemptionCode;
 	}
 
 	@JSON
@@ -1114,6 +1143,7 @@ public class CommerceAccountModelImpl
 		commerceAccountImpl.setLogoId(getLogoId());
 		commerceAccountImpl.setEmail(getEmail());
 		commerceAccountImpl.setTaxId(getTaxId());
+		commerceAccountImpl.setTaxExemptionCode(getTaxExemptionCode());
 		commerceAccountImpl.setType(getType());
 		commerceAccountImpl.setActive(isActive());
 		commerceAccountImpl.setDisplayDate(getDisplayDate());
@@ -1278,6 +1308,14 @@ public class CommerceAccountModelImpl
 			commerceAccountCacheModel.taxId = null;
 		}
 
+		commerceAccountCacheModel.taxExemptionCode = getTaxExemptionCode();
+
+		String taxExemptionCode = commerceAccountCacheModel.taxExemptionCode;
+
+		if ((taxExemptionCode != null) && (taxExemptionCode.length() == 0)) {
+			commerceAccountCacheModel.taxExemptionCode = null;
+		}
+
 		commerceAccountCacheModel.type = getType();
 
 		commerceAccountCacheModel.active = isActive();
@@ -1423,6 +1461,7 @@ public class CommerceAccountModelImpl
 	private long _logoId;
 	private String _email;
 	private String _taxId;
+	private String _taxExemptionCode;
 	private int _type;
 	private boolean _active;
 	private Date _displayDate;
@@ -1478,6 +1517,7 @@ public class CommerceAccountModelImpl
 		_columnOriginalValues.put("logoId", _logoId);
 		_columnOriginalValues.put("email", _email);
 		_columnOriginalValues.put("taxId", _taxId);
+		_columnOriginalValues.put("taxExemptionCode", _taxExemptionCode);
 		_columnOriginalValues.put("type_", _type);
 		_columnOriginalValues.put("active_", _active);
 		_columnOriginalValues.put("displayDate", _displayDate);
@@ -1539,27 +1579,29 @@ public class CommerceAccountModelImpl
 
 		columnBitmasks.put("taxId", 2048L);
 
-		columnBitmasks.put("type_", 4096L);
+		columnBitmasks.put("taxExemptionCode", 4096L);
 
-		columnBitmasks.put("active_", 8192L);
+		columnBitmasks.put("type_", 8192L);
 
-		columnBitmasks.put("displayDate", 16384L);
+		columnBitmasks.put("active_", 16384L);
 
-		columnBitmasks.put("defaultBillingAddressId", 32768L);
+		columnBitmasks.put("displayDate", 32768L);
 
-		columnBitmasks.put("defaultShippingAddressId", 65536L);
+		columnBitmasks.put("defaultBillingAddressId", 65536L);
 
-		columnBitmasks.put("expirationDate", 131072L);
+		columnBitmasks.put("defaultShippingAddressId", 131072L);
 
-		columnBitmasks.put("lastPublishDate", 262144L);
+		columnBitmasks.put("expirationDate", 262144L);
 
-		columnBitmasks.put("status", 524288L);
+		columnBitmasks.put("lastPublishDate", 524288L);
 
-		columnBitmasks.put("statusByUserId", 1048576L);
+		columnBitmasks.put("status", 1048576L);
 
-		columnBitmasks.put("statusByUserName", 2097152L);
+		columnBitmasks.put("statusByUserId", 2097152L);
 
-		columnBitmasks.put("statusDate", 4194304L);
+		columnBitmasks.put("statusByUserName", 4194304L);
+
+		columnBitmasks.put("statusDate", 8388608L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

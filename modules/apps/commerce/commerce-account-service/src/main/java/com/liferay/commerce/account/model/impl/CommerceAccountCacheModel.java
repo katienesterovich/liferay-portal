@@ -62,7 +62,7 @@ public class CommerceAccountCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(47);
+		StringBundler sb = new StringBundler(49);
 
 		sb.append("{externalReferenceCode=");
 		sb.append(externalReferenceCode);
@@ -88,6 +88,8 @@ public class CommerceAccountCacheModel
 		sb.append(email);
 		sb.append(", taxId=");
 		sb.append(taxId);
+		sb.append(", taxExemptionCode=");
+		sb.append(taxExemptionCode);
 		sb.append(", type=");
 		sb.append(type);
 		sb.append(", active=");
@@ -176,6 +178,13 @@ public class CommerceAccountCacheModel
 			commerceAccountImpl.setTaxId(taxId);
 		}
 
+		if (taxExemptionCode == null) {
+			commerceAccountImpl.setTaxExemptionCode("");
+		}
+		else {
+			commerceAccountImpl.setTaxExemptionCode(taxExemptionCode);
+		}
+
 		commerceAccountImpl.setType(type);
 		commerceAccountImpl.setActive(active);
 
@@ -245,6 +254,7 @@ public class CommerceAccountCacheModel
 		logoId = objectInput.readLong();
 		email = objectInput.readUTF();
 		taxId = objectInput.readUTF();
+		taxExemptionCode = objectInput.readUTF();
 
 		type = objectInput.readInt();
 
@@ -314,6 +324,13 @@ public class CommerceAccountCacheModel
 			objectOutput.writeUTF(taxId);
 		}
 
+		if (taxExemptionCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(taxExemptionCode);
+		}
+
 		objectOutput.writeInt(type);
 
 		objectOutput.writeBoolean(active);
@@ -351,6 +368,7 @@ public class CommerceAccountCacheModel
 	public long logoId;
 	public String email;
 	public String taxId;
+	public String taxExemptionCode;
 	public int type;
 	public boolean active;
 	public long displayDate;

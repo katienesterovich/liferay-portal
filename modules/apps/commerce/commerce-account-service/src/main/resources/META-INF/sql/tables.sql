@@ -23,6 +23,7 @@ create table CommerceAccount (
 	logoId LONG,
 	email VARCHAR(75) null,
 	taxId VARCHAR(75) null,
+	taxExemptionCode VARCHAR(75) null,
 	type_ INTEGER,
 	active_ BOOLEAN,
 	displayDate DATE null,

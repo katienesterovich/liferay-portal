@@ -260,6 +260,21 @@ public interface CommerceAccountModel
 	public void setTaxId(String taxId);
 
 	/**
+	 * Returns the tax exemption code of this commerce account.
+	 *
+	 * @return the tax exemption code of this commerce account
+	 */
+	@AutoEscape
+	public String getTaxExemptionCode();
+
+	/**
+	 * Sets the tax exemption code of this commerce account.
+	 *
+	 * @param taxExemptionCode the tax exemption code of this commerce account
+	 */
+	public void setTaxExemptionCode(String taxExemptionCode);
+
+	/**
 	 * Returns the type of this commerce account.
 	 *
 	 * @return the type of this commerce account

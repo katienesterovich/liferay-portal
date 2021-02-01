@@ -62,6 +62,10 @@ public class CommerceAccountTable extends BaseTable<CommerceAccountTable> {
 		"email", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<CommerceAccountTable, String> taxId = createColumn(
 		"taxId", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CommerceAccountTable, String> taxExemptionCode =
+		createColumn(
+			"taxExemptionCode", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<CommerceAccountTable, Integer> type = createColumn(
 		"type_", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 	public final Column<CommerceAccountTable, Boolean> active = createColumn(

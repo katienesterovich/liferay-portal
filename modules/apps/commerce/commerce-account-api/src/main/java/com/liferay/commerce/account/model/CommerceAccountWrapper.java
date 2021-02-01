@@ -54,6 +54,7 @@ public class CommerceAccountWrapper
 		attributes.put("logoId", getLogoId());
 		attributes.put("email", getEmail());
 		attributes.put("taxId", getTaxId());
+		attributes.put("taxExemptionCode", getTaxExemptionCode());
 		attributes.put("type", getType());
 		attributes.put("active", isActive());
 		attributes.put("displayDate", getDisplayDate());
@@ -144,6 +145,12 @@ public class CommerceAccountWrapper
 
 		if (taxId != null) {
 			setTaxId(taxId);
+		}
+
+		String taxExemptionCode = (String)attributes.get("taxExemptionCode");
+
+		if (taxExemptionCode != null) {
+			setTaxExemptionCode(taxExemptionCode);
 		}
 
 		Integer type = (Integer)attributes.get("type");
@@ -456,6 +463,16 @@ public class CommerceAccountWrapper
 	@Override
 	public Date getStatusDate() {
 		return model.getStatusDate();
+	}
+
+	/**
+	 * Returns the tax exemption code of this commerce account.
+	 *
+	 * @return the tax exemption code of this commerce account
+	 */
+	@Override
+	public String getTaxExemptionCode() {
+		return model.getTaxExemptionCode();
 	}
 
 	/**
@@ -826,6 +843,16 @@ public class CommerceAccountWrapper
 	@Override
 	public void setStatusDate(Date statusDate) {
 		model.setStatusDate(statusDate);
+	}
+
+	/**
+	 * Sets the tax exemption code of this commerce account.
+	 *
+	 * @param taxExemptionCode the tax exemption code of this commerce account
+	 */
+	@Override
+	public void setTaxExemptionCode(String taxExemptionCode) {
+		model.setTaxExemptionCode(taxExemptionCode);
 	}
 
 	/**

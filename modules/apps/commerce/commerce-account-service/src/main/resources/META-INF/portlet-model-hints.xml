@@ -17,6 +17,7 @@
 		<field name="logoId" type="long" />
 		<field name="email" type="String" />
 		<field name="taxId" type="String" />
+		<field name="taxExemptionCode" type="String" />
 		<field name="type" type="int" />
 		<field name="active" type="boolean" />
 		<field name="displayDate" type="Date" />

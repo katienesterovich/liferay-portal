@@ -148,6 +148,8 @@ public class CommerceAccountPersistenceTest {
 
 		newCommerceAccount.setTaxId(RandomTestUtil.randomString());
 
+		newCommerceAccount.setTaxExemptionCode(RandomTestUtil.randomString());
+
 		newCommerceAccount.setType(RandomTestUtil.nextInt());
 
 		newCommerceAccount.setActive(RandomTestUtil.randomBoolean());
@@ -210,6 +212,9 @@ public class CommerceAccountPersistenceTest {
 			existingCommerceAccount.getEmail(), newCommerceAccount.getEmail());
 		Assert.assertEquals(
 			existingCommerceAccount.getTaxId(), newCommerceAccount.getTaxId());
+		Assert.assertEquals(
+			existingCommerceAccount.getTaxExemptionCode(),
+			newCommerceAccount.getTaxExemptionCode());
 		Assert.assertEquals(
 			existingCommerceAccount.getType(), newCommerceAccount.getType());
 		Assert.assertEquals(
@@ -297,11 +302,12 @@ public class CommerceAccountPersistenceTest {
 			"commerceAccountId", true, "companyId", true, "userId", true,
 			"userName", true, "createDate", true, "modifiedDate", true,
 			"parentCommerceAccountId", true, "name", true, "logoId", true,
-			"email", true, "taxId", true, "type", true, "active", true,
-			"displayDate", true, "defaultBillingAddressId", true,
-			"defaultShippingAddressId", true, "expirationDate", true,
-			"lastPublishDate", true, "status", true, "statusByUserId", true,
-			"statusByUserName", true, "statusDate", true);
+			"email", true, "taxId", true, "taxExemptionCode", true, "type",
+			true, "active", true, "displayDate", true,
+			"defaultBillingAddressId", true, "defaultShippingAddressId", true,
+			"expirationDate", true, "lastPublishDate", true, "status", true,
+			"statusByUserId", true, "statusByUserName", true, "statusDate",
+			true);
 	}
 
 	@Test
@@ -609,6 +615,8 @@ public class CommerceAccountPersistenceTest {
 		commerceAccount.setEmail(RandomTestUtil.randomString());
 
 		commerceAccount.setTaxId(RandomTestUtil.randomString());
+
+		commerceAccount.setTaxExemptionCode(RandomTestUtil.randomString());
 
 		commerceAccount.setType(RandomTestUtil.nextInt());
 
